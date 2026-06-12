@@ -1,0 +1,24 @@
+# Variables de entorno — NUNCA subir al repositorio
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+env/
+.venv/
+
+# Logs locales
+agente_etiquetado.log
+*.log
+
+# Archivos temporales de test
+test_noel.py
+
+# VS Code
+.vscode/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

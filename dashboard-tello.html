@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tello · Intel Competitiva — Etiquetado</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --tello:#BA0C2F; --tello2:#8B0A24; --tello3:#D4143A;
+  --navy:#1A1A1A; --navy2:#2D2D2D;
+  --blue:#BA0C2F; --blue2:#D4143A;
+  --ice:#FFF0F3; --ice2:#FFD6DE; --white:#FFFFFF;
+  --g50:#F8FAFC; --g100:#F1F5F9; --g200:#E2E8F0; --g300:#CBD5E1;
+  --g400:#94A3B8; --g600:#475569; --g900:#1A1A1A;
+  --red:#DC2626; --redl:#FEE2E2; --amber:#D97706; --amberl:#FEF3C7;
+  --green:#16A34A; --greenl:#DCFCE7; --purple:#7C3AED; --purplel:#EDE9FE;
+  --sw:224px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Montserrat',sans-serif;background:var(--g50);color:var(--g900);display:flex;height:100vh;overflow:hidden;font-size:14px;}
+
+/* ── SIDEBAR ── */
+.sb{width:var(--sw);background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;z-index:10;}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.08);}
+.tello-badge{display:inline-flex;align-items:center;background:var(--tello);border-radius:4px;padding:3px 10px 3px 10px;margin-bottom:6px;}
+.tello-badge span{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#fff;font-style:italic;letter-spacing:.02em;}
+.sb-logo .brand{font-size:10.5px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;}
+.sb-logo .sub{font-size:10px;color:rgba(255,255,255,.25);margin-top:2px;letter-spacing:.03em;}
+.sb-sec{padding:14px 12px 4px;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.12em;text-transform:uppercase;}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 14px;margin:1px 8px;border-radius:6px;cursor:pointer;color:rgba(255,255,255,.45);font-size:12.5px;font-weight:500;transition:all .15s;}
+.ni:hover{background:rgba(255,255,255,.06);color:#fff;}
+.ni.active{background:var(--tello);color:#fff;}
+.ni .ic{font-size:15px;width:18px;text-align:center;}
+.ni .badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+.sb-bot{margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,.07);}
+.live{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.05);border-radius:6px;font-size:11px;color:rgba(255,255,255,.35);}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#22C55E;flex-shrink:0;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4);}50%{box-shadow:0 0 0 4px rgba(34,197,94,0);}}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{background:#fff;border-bottom:1px solid var(--g200);padding:0 24px;height:54px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.pg-title{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;color:var(--navy);letter-spacing:.02em;}
+.tb-right{display:flex;gap:8px;margin-left:auto;align-items:center;}
+.chip{padding:5px 12px;border-radius:20px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--g200);background:#fff;color:var(--g600);transition:all .15s;}
+.chip:hover{border-color:var(--tello);color:var(--tello);}
+.chip.active{background:var(--tello);border-color:var(--tello);color:#fff;}
+.upd{font-size:11px;color:var(--g400);font-family:'Courier New',monospace;padding-left:12px;border-left:1px solid var(--g200);}
+.content{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px;}
+.screen{display:none;flex-direction:column;gap:16px;}
+.screen.active{display:flex;}
+
+/* ── CARDS / GRID ── */
+.card{background:#fff;border-radius:8px;border:1px solid var(--g200);overflow:hidden;}
+.ch{padding:14px 18px 12px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;}
+.ct{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--navy);letter-spacing:.02em;}
+.cs{font-size:11px;color:var(--g400);margin-top:1px;}
+.ca{font-size:11.5px;color:var(--tello);cursor:pointer;font-weight:600;}
+.g2{display:grid;grid-template-columns:1fr 340px;gap:16px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+
+/* ── KPI ── */
+.kpi{background:#fff;border-radius:8px;padding:16px 18px;border:1px solid var(--g200);position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s;cursor:default;}
+.kpi:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.07);}
+.kpi::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;border-radius:8px 0 0 8px;}
+.kpi.r::before{background:var(--red);}
+.kpi.b::before{background:var(--tello);}
+.kpi.g::before{background:var(--green);}
+.kpi.a::before{background:var(--amber);}
+.kpi.p::before{background:var(--purple);}
+.kl{font-size:10.5px;color:var(--g400);font-weight:600;text-transform:uppercase;letter-spacing:.07em;}
+.kv{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:700;color:var(--navy);margin:4px 0 2px;line-height:1;letter-spacing:.01em;}
+.ks{font-size:11px;color:var(--g400);}
+.kb{position:absolute;top:14px;right:14px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.kb.r{background:var(--redl);color:var(--red);}
+.kb.g{background:var(--greenl);color:var(--green);}
+.kb.a{background:var(--amberl);color:var(--amber);}
+
+/* ── ALERTS ── */
+.ali{padding:12px 18px;border-bottom:1px solid var(--g100);display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:background .1s;animation:fadeIn .3s ease both;}
+.ali:hover{background:var(--g50);}
+.ali:last-child{border-bottom:none;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+.ad{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+.ad.crit{background:var(--red);box-shadow:0 0 0 3px rgba(220,38,38,.15);}
+.ad.alta{background:var(--amber);}
+.ad.new{background:var(--tello);}
+.ad.baja{background:var(--g300);}
+.ab{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px;}
+.ab.cf{color:#991B1B;} .ab.ep{color:#0369A1;} .ab.no{color:#9333EA;} .ab.ar{color:#047857;}
+.adesc{font-size:12.5px;color:var(--g900);line-height:1.4;}
+.atime{font-size:11px;color:var(--g400);margin-top:3px;font-family:'Courier New',monospace;}
+.atag{margin-left:auto;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0;}
+.atag.crit{background:var(--redl);color:var(--red);}
+.atag.alta{background:var(--amberl);color:var(--amber);}
+.atag.new{background:var(--ice2);color:var(--tello);}
+.atag.baja{background:var(--g100);color:var(--g600);}
+
+/* ── TABLE ── */
+table{width:100%;border-collapse:collapse;}
+th{padding:9px 14px;text-align:left;font-size:10.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.07em;background:var(--g50);border-bottom:1px solid var(--g200);}
+td{padding:10px 14px;font-size:12.5px;border-bottom:1px solid var(--g100);color:var(--g900);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--g50);}
+.mono{font-family:'Courier New',monospace;font-size:12px;}
+.bp{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.bp.cf{background:#FEE2E2;color:#991B1B;}
+.bp.ep{background:#E0F2FE;color:#0369A1;}
+.bp.no{background:#F3E8FF;color:#9333EA;}
+.bp.ar{background:#D1FAE5;color:#047857;}
+.cc{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:4px;font-size:10.5px;font-weight:600;cursor:pointer;}
+.cc.chg{background:var(--redl);color:var(--red);}
+.cc.ok{background:var(--greenl);color:var(--green);}
+.cc.nw{background:var(--ice2);color:var(--tello);}
+
+/* ── BARS ── */
+.bw{display:flex;align-items:center;gap:8px;}
+.bg{flex:1;height:6px;background:var(--g100);border-radius:3px;overflow:hidden;}
+.bf{height:100%;border-radius:3px;transition:width .6s ease;}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--g200);}
+.tab{padding:11px 18px;font-size:12.5px;font-weight:500;color:var(--g400);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;}
+.tab:hover{color:var(--navy);}
+.tab.active{color:var(--tello);border-bottom-color:var(--tello);font-weight:700;}
+.tc{display:none;} .tc.active{display:block;}
+
+/* ── CHART BARS ── */
+.cbars{display:flex;align-items:flex-end;gap:6px;height:90px;margin-bottom:6px;}
+.cgroup{flex:1;display:flex;align-items:flex-end;gap:2px;}
+.cbar{flex:1;border-radius:3px 3px 0 0;cursor:pointer;transition:opacity .15s;}
+.cbar:hover{opacity:.75;}
+.clabels{display:flex;gap:6px;}
+.clabel{flex:1;text-align:center;font-size:10px;color:var(--g400);font-family:'Courier New',monospace;}
+.legend{display:flex;gap:12px;flex-wrap:wrap;padding:8px 0 2px;}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600);}
+.ld{width:8px;height:8px;border-radius:2px;}
+
+/* ── CLAIMS GRID ── */
+.cgrid{display:grid;grid-template-columns:170px repeat(4,1fr);}
+.ch2{padding:10px 6px 8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);text-align:center;}
+.ch2:first-child{text-align:left;}
+.cl2{padding:8px 6px;font-size:12px;color:var(--g600);border-bottom:1px solid var(--g100);display:flex;align-items:center;}
+.cc2{padding:8px 6px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:center;font-size:16px;}
+
+/* ── DETAIL PANEL ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.2);z-index:99;opacity:0;pointer-events:none;transition:opacity .25s;}
+.overlay.show{opacity:1;pointer-events:all;}
+.dp{position:fixed;right:0;top:0;bottom:0;width:420px;background:#fff;border-left:1px solid var(--g200);z-index:100;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-8px 0 32px rgba(0,0,0,.08);}
+.dp.open{transform:translateX(0);}
+.dh{padding:18px 20px 14px;border-bottom:1px solid var(--g200);display:flex;align-items:flex-start;gap:12px;}
+.dc{margin-left:auto;width:28px;height:28px;border-radius:6px;background:var(--g100);border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--g600);flex-shrink:0;}
+.dc:hover{background:var(--g200);}
+.db{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:16px;}
+.dst{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--g400);margin-bottom:8px;}
+.ng{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.nb{background:var(--g50);border-radius:6px;padding:10px 12px;text-align:center;}
+.nv{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--navy);}
+.nu{font-size:10px;color:var(--g400);font-weight:500;}
+.nl{font-size:11px;color:var(--g600);margin-top:3px;}
+.diff{background:var(--redl);border:1px solid #FECACA;border-radius:6px;padding:12px 14px;}
+.diff-t{font-size:12px;font-weight:700;color:var(--red);margin-bottom:8px;}
+.dr{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;}
+.dl{color:var(--g600);min-width:90px;}
+.do{color:var(--red);text-decoration:line-through;font-family:'Courier New',monospace;}
+.dn{color:var(--green);font-weight:600;font-family:'Courier New',monospace;}
+.ingr{font-size:12px;color:var(--g600);line-height:1.6;background:var(--g50);border-radius:6px;padding:10px 12px;}
+.ingr mark{background:var(--amberl);color:var(--amber);padding:0 2px;border-radius:2px;font-weight:600;}
+.ctags{display:flex;flex-wrap:wrap;gap:6px;}
+.ctag{padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600;background:var(--ice);color:var(--tello);border:1px solid var(--ice2);}
+
+/* ── HISTORY ── */
+.hist-item{display:flex;gap:14px;padding:12px 18px;border-bottom:1px solid var(--g100);}
+.hist-item:last-child{border-bottom:none;}
+.hist-line{display:flex;flex-direction:column;align-items:center;gap:0;}
+.hist-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.hist-v{flex:1;width:1px;background:var(--g200);margin:2px 0;}
+.hist-body{flex:1;padding-bottom:4px;}
+.hist-date{font-size:11px;color:var(--g400);font-family:'Courier New',monospace;margin-bottom:3px;}
+.hist-desc{font-size:12.5px;color:var(--g900);line-height:1.4;}
+.hist-tag{display:inline-block;margin-top:4px;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;}
+
+/* ── SEARCH ── */
+.search-wrap{position:relative;}
+.search-wrap input{width:100%;padding:9px 14px 9px 36px;border:1.5px solid var(--g200);border-radius:6px;font-size:12.5px;font-family:'Montserrat',sans-serif;color:var(--g900);background:#fff;outline:none;transition:border-color .15s;}
+.search-wrap input:focus{border-color:var(--tello);}
+.search-wrap::before{content:'🔍';position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;}
+
+/* ── SETTINGS ── */
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--g100);}
+.setting-row:last-child{border-bottom:none;}
+.toggle{width:40px;height:22px;border-radius:11px;background:var(--g200);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:var(--tello);}
+.toggle::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle.on::after{transform:translateX(18px);}
+
+/* ── PRODUCT LIST ── */
+.prod-item{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--g100);cursor:pointer;transition:background .1s;}
+.prod-item:hover{background:var(--g50);}
+.prod-item:last-child{border-bottom:none;}
+.prod-icon{width:38px;height:38px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+
+/* ── NUTRI COMPARE ── */
+.nc-wrap{padding:16px 18px;}
+.nc-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.nc-label{font-size:12px;color:var(--g600);width:80px;flex-shrink:0;}
+.nc-bars{flex:1;display:flex;flex-direction:column;gap:4px;}
+.nc-b{display:flex;align-items:center;gap:6px;}
+.nc-fill{height:10px;border-radius:5px;min-width:4px;transition:width .7s ease;}
+.nc-val{font-size:11px;font-family:'Courier New',monospace;color:var(--g400);width:36px;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--g200);border-radius:2px;}
+
+.empty-state{padding:48px;text-align:center;color:var(--g400);font-size:13px;}
+.empty-state .big{font-size:32px;margin-bottom:8px;}
+.new-banner{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#1A1A1A 0%,#BA0C2F 100%);color:#fff;padding:10px 16px;border-radius:6px;font-size:12.5px;}
+.btn{padding:8px 14px;border-radius:6px;font-size:12px;font-family:'Montserrat',sans-serif;cursor:pointer;font-weight:700;border:none;transition:all .15s;}
+.btn-pri{background:var(--tello);color:#fff;}
+.btn-pri:hover{background:var(--tello2);}
+.btn-sec{background:var(--ice);color:var(--tello);border:1px solid var(--ice2);}
+.btn-sec:hover{background:var(--ice2);}
+.btn-ghost{background:#fff;color:var(--g600);border:1px solid var(--g200);}
+.btn-ghost:hover{background:var(--g50);}
+
+/* ── TELLO RED DIVIDER ── */
+.tello-rule{height:2px;background:var(--tello);border:none;margin:0;}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sb">
+  <div class="sb-logo">
+    <div class="tello-badge"><span>Tello</span></div>
+    <div class="brand">Intel Competitiva</div>
+    <div class="sub">Etiquetado · v1.0</div>
+  </div>
+  <div class="sb-sec">Principal</div>
+  <div class="ni active" onclick="nav('dashboard',this)"><span class="ic">⊞</span> Dashboard</div>
+  <div class="ni" onclick="nav('alertas',this)"><span class="ic">⚠</span> Alertas <span class="badge">3</span></div>
+  <div class="ni" onclick="nav('productos',this)"><span class="ic">◫</span> Productos</div>
+  <div class="sb-sec">Análisis</div>
+  <div class="ni" onclick="nav('comparativa',this)"><span class="ic">⊡</span> Comparativa</div>
+  <div class="ni" onclick="nav('historial',this)"><span class="ic">∿</span> Historial cambios</div>
+  <div class="ni" onclick="nav('claims',this)"><span class="ic">☰</span> Mapa de claims</div>
+  <div class="ni" onclick="nav('nutri',this)"><span class="ic">◈</span> Nutricional</div>
+  <div class="sb-sec">Competidores</div>
+  <div class="ni" onclick="nav('marca','','campofrio')"><span class="ic" style="color:#F87171">●</span> Campofrío</div>
+  <div class="ni" onclick="nav('marca','','elpozo')"><span class="ic" style="color:#38BDF8">●</span> El Pozo</div>
+  <div class="ni" onclick="nav('marca','','noel')"><span class="ic" style="color:#C084FC">●</span> Noel</div>
+  <div class="ni" onclick="nav('marca','','argal')"><span class="ic" style="color:#4ADE80">●</span> Argal</div>
+  <div class="sb-sec">Sistema</div>
+  <div class="ni" onclick="nav('config',this)"><span class="ic">⚙</span> Configuración</div>
+  <div class="sb-bot">
+    <div class="live"><div class="live-dot"></div>Ciclo activo · 08:45</div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="pg-title" id="pgTitle">Dashboard</div>
+    <div class="tb-right" id="tbRight">
+      <div class="chip active" onclick="filterChip(this)">Todos</div>
+      <div class="chip" onclick="filterChip(this)">Jamón cocido</div>
+      <div class="chip" onclick="filterChip(this)">Embutidos</div>
+      <div class="chip" onclick="filterChip(this)">Fiambres</div>
+    </div>
+    <div class="upd">Actualizado: hoy 08:45</div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══════════════════ DASHBOARD ══════════════════ -->
+    <div class="screen active" id="s-dashboard">
+      <div class="g4">
+        <div class="kpi r"><div class="kl">Cambios críticos</div><div class="kv">3</div><div class="ks">últimas 12 horas</div><div class="kb r">↑ Nuevo</div></div>
+        <div class="kpi b"><div class="kl">Productos monitorizados</div><div class="kv">248</div><div class="ks">4 competidores</div><div class="kb g">+6 esta semana</div></div>
+        <div class="kpi g"><div class="kl">Nuevos productos</div><div class="kv">6</div><div class="ks">detectados esta semana</div><div class="kb g">↑ +6</div></div>
+        <div class="kpi a"><div class="kl">Cambios en claims</div><div class="kv">11</div><div class="ks">este mes</div><div class="kb a">Este mes</div></div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="ch"><div><div class="ct">Alertas recientes</div><div class="cs">Cambios detectados en ingredientes y nutricional</div></div><div class="ca" onclick="nav('alertas')">Ver todas →</div></div>
+          <div class="ali" onclick="openDetail('campofrio')"><div class="ad crit"></div><div style="flex:1"><div class="ab cf">Campofrío</div><div class="adesc">Jamón Cocido Extra — % carne: <strong>82% → 79%</strong></div><div class="atime">Hace 23 min · ingredientes</div></div><div class="atag crit">Crítica</div></div>
+          <div class="ali" onclick="openDetail('elpozo')"><div class="ad crit"></div><div style="flex:1"><div class="ab ep">El Pozo</div><div class="adesc">Pechuga de Pavo — Sal: <strong>1.2g → 0.9g</strong> por 100g</div><div class="atime">Hace 2 h · nutricional</div></div><div class="atag crit">Crítica</div></div>
+          <div class="ali"><div class="ad alta"></div><div style="flex:1"><div class="ab ar">Argal</div><div class="adesc">Salchichón Ibérico — Nuevo claim: <strong>"Sin nitritos añadidos"</strong></div><div class="atime">Hace 4 h · claims</div></div><div class="atag alta">Alta</div></div>
+          <div class="ali"><div class="ad new"></div><div style="flex:1"><div class="ab no">Noel</div><div class="adesc">Nuevo producto: <strong>Jamón Serrano 18m Sin Sal</strong></div><div class="atime">Hace 6 h · nuevo producto</div></div><div class="atag new">Nuevo</div></div>
+          <div class="ali"><div class="ad alta"></div><div style="flex:1"><div class="ab cf">Campofrío</div><div class="adesc">Mortadela Clásica — Modificación conservantes</div><div class="atime">Hace 8 h · ingredientes</div></div><div class="atag alta">Alta</div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div><div class="ct">Actividad de cambios</div><div class="cs">Últimos 6 meses</div></div></div>
+          <div style="padding:14px 18px 10px">
+            <div class="cbars" id="dashChart"></div>
+            <div class="clabels" id="dashLabels"></div>
+            <div class="legend">
+              <div class="li"><div class="ld" style="background:#991B1B"></div>Campofrío</div>
+              <div class="li"><div class="ld" style="background:#0369A1"></div>El Pozo</div>
+              <div class="li"><div class="ld" style="background:#9333EA"></div>Noel</div>
+              <div class="li"><div class="ld" style="background:#047857"></div>Argal</div>
+            </div>
+          </div>
+          <div style="padding:0 18px 14px;border-top:1px solid var(--g100);margin-top:4px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--navy);padding-top:12px;margin-bottom:8px;letter-spacing:.02em">Distribución por tipo</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div class="bw"><div style="font-size:11.5px;color:var(--g600);width:90px">Ingredientes</div><div class="bg"><div class="bf" style="width:68%;background:var(--tello)"></div></div><span class="mono" style="font-size:11px;color:var(--g400);width:28px;text-align:right">68%</span></div>
+              <div class="bw"><div style="font-size:11.5px;color:var(--g600);width:90px">Nutricional</div><div class="bg"><div class="bf" style="width:22%;background:var(--amber)"></div></div><span class="mono" style="font-size:11px;color:var(--g400);width:28px;text-align:right">22%</span></div>
+              <div class="bw"><div style="font-size:11.5px;color:var(--g600);width:90px">Claims</div><div class="bg"><div class="bf" style="width:10%;background:var(--navy2)"></div></div><span class="mono" style="font-size:11px;color:var(--g400);width:28px;text-align:right">10%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="tabs"><div class="tab active" onclick="stab('ct','ct-comp',this)">Comparativa rápida</div><div class="tab" onclick="stab('ct','ct-new',this)">Nuevos esta semana</div></div>
+        <div class="tc active" id="ct-comp">
+          <table><thead><tr><th>Marca</th><th>Producto</th><th>% Carne</th><th>Kcal</th><th>Proteínas</th><th>Sal</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr style="cursor:pointer" onclick="openDetail('campofrio')"><td><span class="bp cf">Campofrío</span></td><td>Jamón Cocido Extra</td><td><div class="bw"><div class="bg" style="width:60px"><div class="bf" style="width:79%;background:#991B1B"></div></div><span class="mono" style="font-size:11px">79%</span></div></td><td class="mono">89</td><td class="mono">18.1g</td><td class="mono">1.6g</td><td><span class="cc chg">⚠ Cambio</span></td></tr>
+            <tr style="cursor:pointer" onclick="openDetail('elpozo')"><td><span class="bp ep">El Pozo</span></td><td>Jamón Cocido Superior</td><td><div class="bw"><div class="bg" style="width:60px"><div class="bf" style="width:84%;background:#0369A1"></div></div><span class="mono" style="font-size:11px">84%</span></div></td><td class="mono">82</td><td class="mono">17.8g</td><td class="mono">1.2g</td><td><span class="cc chg">⚠ Cambio</span></td></tr>
+            <tr><td><span class="bp no">Noel</span></td><td>Jamón Cocido Extra</td><td><div class="bw"><div class="bg" style="width:60px"><div class="bf" style="width:86%;background:#9333EA"></div></div><span class="mono" style="font-size:11px">86%</span></div></td><td class="mono">85</td><td class="mono">18.4g</td><td class="mono">1.3g</td><td><span class="cc ok">✓ Sin cambios</span></td></tr>
+            <tr><td><span class="bp ar">Argal</span></td><td>Jamón Cocido Premium</td><td><div class="bw"><div class="bg" style="width:60px"><div class="bf" style="width:88%;background:#047857"></div></div><span class="mono" style="font-size:11px">88%</span></div></td><td class="mono">91</td><td class="mono">19.2g</td><td class="mono">1.4g</td><td><span class="cc ok">✓ Sin cambios</span></td></tr>
+          </tbody></table>
+        </div>
+        <div class="tc" id="ct-new">
+          <table><thead><tr><th>Marca</th><th>Producto</th><th>Categoría</th><th>Detectado</th><th>Claims</th></tr></thead>
+          <tbody>
+            <tr><td><span class="bp no">Noel</span></td><td>Jamón Serrano 18m Sin Sal</td><td>Curados</td><td class="mono" style="font-size:11px">25/05/2026</td><td><span class="ctag" style="font-size:10.5px;padding:2px 7px">Sin sal</span></td></tr>
+            <tr><td><span class="bp cf">Campofrío</span></td><td>Pechuga Pavo Mediterránea</td><td>Fiambres ave</td><td class="mono" style="font-size:11px">24/05/2026</td><td><span class="ctag" style="font-size:10.5px;padding:2px 7px">Sin gluten</span></td></tr>
+            <tr><td><span class="bp ep">El Pozo</span></td><td>Chorizo Extra Ibérico Bio</td><td>Embutidos</td><td class="mono" style="font-size:11px">23/05/2026</td><td><span class="ctag" style="font-size:10.5px;padding:2px 7px">Bio</span></td></tr>
+            <tr><td><span class="bp ar">Argal</span></td><td>Lomo Embuchado S. Nitritos</td><td>Curados</td><td class="mono" style="font-size:11px">22/05/2026</td><td><span class="ctag" style="font-size:10.5px;padding:2px 7px">Sin nitritos</span></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ ALERTAS ══════════════════ -->
+    <div class="screen" id="s-alertas">
+      <div class="g4">
+        <div class="kpi r"><div class="kl">Críticas</div><div class="kv">3</div><div class="ks">requieren acción inmediata</div></div>
+        <div class="kpi a"><div class="kl">Altas</div><div class="kv">5</div><div class="ks">revisar hoy</div></div>
+        <div class="kpi b"><div class="kl">Nuevos productos</div><div class="kv">6</div><div class="ks">esta semana</div></div>
+        <div class="kpi" style="border-left:3px solid var(--g300)"><div class="kl">Bajas</div><div class="kv">12</div><div class="ks">informativas</div></div>
+      </div>
+      <div class="card">
+        <div class="ch">
+          <div><div class="ct">Todas las alertas</div><div class="cs">Ordenadas por urgencia · últimas 48h</div></div>
+          <div style="display:flex;gap:8px">
+            <div class="chip active" onclick="filterChip(this)">Todas</div>
+            <div class="chip" onclick="filterChip(this)">Crítica</div>
+            <div class="chip" onclick="filterChip(this)">Alta</div>
+            <div class="chip" onclick="filterChip(this)">Nueva</div>
+            <div class="chip" onclick="filterChip(this)">Baja</div>
+          </div>
+        </div>
+        <div class="ali" onclick="openDetail('campofrio')"><div class="ad crit"></div><div style="flex:1"><div class="ab cf">Campofrío</div><div class="adesc">Jamón Cocido Extra — % carne modificado de <strong>82% a 79%</strong>. Posible impacto en declaración nutricional obligatoria.</div><div class="atime">25/05/2026 · 08:22 · ingredientes</div></div><div class="atag crit">Crítica</div></div>
+        <div class="ali" onclick="openDetail('elpozo')"><div class="ad crit"></div><div style="flex:1"><div class="ab ep">El Pozo</div><div class="adesc">Pechuga de Pavo Loncheada — Sal reducida de <strong>1.2g a 0.9g</strong>/100g. Posible nuevo claim "reducido en sal".</div><div class="atime">25/05/2026 · 06:14 · nutricional</div></div><div class="atag crit">Crítica</div></div>
+        <div class="ali"><div class="ad crit"></div><div style="flex:1"><div class="ab cf">Campofrío</div><div class="adesc">Mortadela Clásica — Cambio en conservantes: <strong>se añade E-252</strong> (nitrato potásico). Revisar declaración alérgenos.</div><div class="atime">25/05/2026 · 00:10 · ingredientes</div></div><div class="atag crit">Crítica</div></div>
+        <div class="ali"><div class="ad alta"></div><div style="flex:1"><div class="ab ar">Argal</div><div class="adesc">Salchichón Ibérico — Nuevo claim en packaging: <strong>"Sin nitritos añadidos"</strong>. Ingredientes sin cambios.</div><div class="atime">24/05/2026 · 18:33 · claims</div></div><div class="atag alta">Alta</div></div>
+        <div class="ali"><div class="ad alta"></div><div style="flex:1"><div class="ab ep">El Pozo</div><div class="adesc">Lomo Embuchado Ibérico — Kcal aumentadas de <strong>381 a 402</strong> kcal/100g. Posible reformulación.</div><div class="atime">24/05/2026 · 14:05 · nutricional</div></div><div class="atag alta">Alta</div></div>
+        <div class="ali"><div class="ad alta"></div><div style="flex:1"><div class="ab no">Noel</div><div class="adesc">Chorizo Extra — Grasas saturadas: <strong>13.2g → 11.8g</strong>/100g. Actualización tabla nutricional.</div><div class="atime">24/05/2026 · 09:47 · nutricional</div></div><div class="atag alta">Alta</div></div>
+        <div class="ali"><div class="ad new"></div><div style="flex:1"><div class="ab no">Noel</div><div class="adesc">Nuevo producto detectado: <strong>Jamón Serrano 18 Meses Sin Sal Añadida</strong> (curados, 80g).</div><div class="atime">25/05/2026 · 08:45 · nuevo producto</div></div><div class="atag new">Nuevo</div></div>
+        <div class="ali"><div class="ad new"></div><div style="flex:1"><div class="ab cf">Campofrío</div><div class="adesc">Nuevo producto detectado: <strong>Pechuga de Pavo Mediterránea</strong> con hierbas (fiambres de ave, 200g).</div><div class="atime">24/05/2026 · 22:11 · nuevo producto</div></div><div class="atag new">Nuevo</div></div>
+        <div class="ali"><div class="ad baja"></div><div style="flex:1"><div class="ab ep">El Pozo</div><div class="adesc">Fuet Selecta — Actualización de imagen de producto y descripción web.</div><div class="atime">24/05/2026 · 11:20 · descripción</div></div><div class="atag baja">Baja</div></div>
+        <div class="ali"><div class="ad baja"></div><div style="flex:1"><div class="ab ar">Argal</div><div class="adesc">Sobrasada Mallorquina — Cambio en descripción de la página web del producto.</div><div class="atime">23/05/2026 · 16:44 · descripción</div></div><div class="atag baja">Baja</div></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ PRODUCTOS ══════════════════ -->
+    <div class="screen" id="s-productos">
+      <div class="card">
+        <div class="ch">
+          <div><div class="ct">Catálogo de productos monitorizados</div><div class="cs">248 productos · 4 marcas</div></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <div class="search-wrap" style="width:220px"><input type="text" placeholder="Buscar producto..."></div>
+            <select style="font-size:12px;border:1.5px solid var(--g200);border-radius:6px;padding:6px 10px;color:var(--g900);background:#fff;font-family:'Montserrat',sans-serif;outline:none">
+              <option>Todas las marcas</option><option>Campofrío</option><option>El Pozo</option><option>Noel</option><option>Argal</option>
+            </select>
+            <select style="font-size:12px;border:1.5px solid var(--g200);border-radius:6px;padding:6px 10px;color:var(--g900);background:#fff;font-family:'Montserrat',sans-serif;outline:none">
+              <option>Todas las categorías</option><option>Cocidos</option><option>Curados</option><option>Embutidos</option><option>Fiambres de ave</option>
+            </select>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>Marca</th><th>Producto</th><th>Categoría</th><th>Última actualización</th><th>% Carne</th><th>Kcal</th><th>Estado</th><th></th></tr></thead>
+          <tbody>
+            <tr style="cursor:pointer" onclick="openDetail('campofrio')"><td><span class="bp cf">Campofrío</span></td><td>Jamón Cocido Extra</td><td>Cocidos</td><td class="mono" style="font-size:11px">25/05 08:22</td><td class="mono">79%</td><td class="mono">89</td><td><span class="cc chg">⚠ Cambio</span></td><td><span style="color:var(--tello);cursor:pointer;font-size:12px;font-weight:600">Ver →</span></td></tr>
+            <tr style="cursor:pointer"><td><span class="bp cf">Campofrío</span></td><td>Mortadela Clásica</td><td>Embutidos</td><td class="mono" style="font-size:11px">25/05 00:10</td><td class="mono">65%</td><td class="mono">270</td><td><span class="cc chg">⚠ Cambio</span></td><td><span style="color:var(--tello);cursor:pointer;font-size:12px;font-weight:600">Ver →</span></td></tr>
+            <tr><td><span class="bp cf">Campofrío</span></td><td>Salchichón Gran Reserva</td><td>Embutidos</td><td class="mono" style="font-size:11px">24/05 18:00</td><td class="mono">72%</td><td class="mono">395</td><td><span class="cc ok">✓ Sin cambios</span></td><td><span style="color:var(--tello);cursor:pointer;font-size:12px;font-weight:600">Ver →</span></td></tr>
+            <tr style="cursor:pointer" onclick="openDetail('elpozo')"><td><span class="bp ep">El Pozo</span></td><td>Pechuga de Pavo Loncheada</td><td>Fiambres de ave</td><td class="mono" style="font-size:11px">25/05 06:14</td><td class="mono">84%</td><td class="mono">97</td><td><span class="cc chg">⚠ Cambio</span></td><td><span style="color:var(--tello);cursor:pointer;font-size:12px;font-weight:600">Ver →</span></td></tr>
+            <tr><td><span class="bp ep">El Pozo</span></td><td>Lomo Embuchado Ibérico</td><td>Curados</td><td class="mono" style="font-size:11px">24/05 14:05</td><td class="mono">100%</td><td class="mono">402</td><td><span class="cc chg">⚠ Cambio</span></td><td><span style="color:var(--tello);cursor:pointer;font-size:12px;font-weight:600">Ver →</span></td></tr>
+            <tr><td><span class="bp ep">El Pozo</span></td><td>Fuet Selecta</td><td>Embutidos</td><td class="mono" style="font-size:11px">24/05 11:20</td><td class="mono">67%</td><td class="mono">425</td><td><span class="cc ok">✓ Sin cambios</span></td><td><span style="color:var(--tello);cursor:pointer;font-size:12px;font-weight:600">Ver →</span></td></tr>
+            <tr><td><span class="bp no">Noel</span></td><td>Jamón Cocido Extra</td><td>Cocidos</td><td class="mono" style="font-size:11px">24/05 18:00</td><td class="mono">86%</td><td class="mono">85</td><td><span class="cc ok">✓ Sin cambios</span></td><td><span style="color:var(--tello);cursor:pointer;font-size:12px;font-weight:600">Ver →</span></td></tr>
+            <tr><td><span class="bp no">Noel</span></td><td>Chorizo Extra</td><td>Embutidos</td><td class="mono" style="font-size:11px">24/05 09:47</td><td class="mono">74%</td><td class="mono">388</td><td><span class="cc chg">⚠ Cambio</span></td><td><span style="color:var(--tello);cursor:pointer;font-size:12px;font-weight:600">Ver →</span></td></tr>
+            <tr><td><span class="bp no">Noel</span></td><td>Jamón Serrano 18m Sin Sal ✨</td><td>Curados</td><td class="mono" style="font-size:11px">25/05 08:45</td><td class="mono">100%</td><td class="mono">—</td><td><span class="cc nw">★ Nuevo</span></td><td><span style="color:var(--tello);cursor:pointer;font-size:12px;font-weight:600">Ver →</span></td></tr>
+            <tr><td><span class="bp ar">Argal</span></td><td>Jamón Cocido Premium</td><td>Cocidos</td><td class="mono" style="font-size:11px">24/05 18:00</td><td class="mono">88%</td><td class="mono">91</td><td><span class="cc ok">✓ Sin cambios</span></td><td><span style="color:var(--tello);cursor:pointer;font-size:12px;font-weight:600">Ver →</span></td></tr>
+            <tr><td><span class="bp ar">Argal</span></td><td>Salchichón Ibérico</td><td>Embutidos</td><td class="mono" style="font-size:11px">24/05 18:33</td><td class="mono">70%</td><td class="mono">412</td><td><span class="cc chg">⚠ Cambio</span></td><td><span style="color:var(--tello);cursor:pointer;font-size:12px;font-weight:600">Ver →</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════════ COMPARATIVA ══════════════════ -->
+    <div class="screen" id="s-comparativa">
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:12.5px;color:var(--g600);font-weight:600">Categoría:</span>
+        <select style="font-size:13px;border:1.5px solid var(--g200);border-radius:6px;padding:6px 12px;color:var(--navy);background:#fff;font-family:'Montserrat',sans-serif;outline:none;font-weight:600">
+          <option>Jamón cocido</option><option>Pechuga de pavo</option><option>Mortadela</option><option>Salchichón</option><option>Chorizo</option>
+        </select>
+        <span style="font-size:11.5px;color:var(--g400);margin-left:auto">4 productos comparados · por 100g</span>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct">Tabla comparativa completa</div></div>
+        <table><thead><tr><th>Marca</th><th>Producto</th><th>% Carne</th><th>Kcal</th><th>Proteínas</th><th>Grasas</th><th>G.Saturadas</th><th>Carboh.</th><th>Sal</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr onclick="openDetail('campofrio')" style="cursor:pointer"><td><span class="bp cf">Campofrío</span></td><td>Jamón Cocido Extra</td><td><div class="bw"><div class="bg" style="width:70px"><div class="bf" style="width:79%;background:#991B1B"></div></div><span class="mono" style="font-size:11px">79%</span></div></td><td class="mono">89</td><td class="mono">18.1g</td><td class="mono">1.9g</td><td class="mono">0.7g</td><td class="mono">0.8g</td><td class="mono">1.6g</td><td><span class="cc chg">⚠ Cambio</span></td></tr>
+          <tr onclick="openDetail('elpozo')" style="cursor:pointer"><td><span class="bp ep">El Pozo</span></td><td>Jamón Cocido Superior</td><td><div class="bw"><div class="bg" style="width:70px"><div class="bf" style="width:84%;background:#0369A1"></div></div><span class="mono" style="font-size:11px">84%</span></div></td><td class="mono">82</td><td class="mono">17.8g</td><td class="mono">1.4g</td><td class="mono">0.5g</td><td class="mono">0.6g</td><td class="mono">1.2g</td><td><span class="cc chg">⚠ Cambio</span></td></tr>
+          <tr><td><span class="bp no">Noel</span></td><td>Jamón Cocido Extra</td><td><div class="bw"><div class="bg" style="width:70px"><div class="bf" style="width:86%;background:#9333EA"></div></div><span class="mono" style="font-size:11px">86%</span></div></td><td class="mono">85</td><td class="mono">18.4g</td><td class="mono">1.6g</td><td class="mono">0.6g</td><td class="mono">0.7g</td><td class="mono">1.3g</td><td><span class="cc ok">✓ Sin cambios</span></td></tr>
+          <tr><td><span class="bp ar">Argal</span></td><td>Jamón Cocido Premium</td><td><div class="bw"><div class="bg" style="width:70px"><div class="bf" style="width:88%;background:#047857"></div></div><span class="mono" style="font-size:11px">88%</span></div></td><td class="mono">91</td><td class="mono">19.2g</td><td class="mono">2.1g</td><td class="mono">0.8g</td><td class="mono">0.5g</td><td class="mono">1.4g</td><td><span class="cc ok">✓ Sin cambios</span></td></tr>
+        </tbody></table>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct">Comparativa visual — % Carne</div><div class="cs">Mayor % = mayor calidad declarada</div></div>
+        <div class="nc-wrap">
+          <div class="nc-bar-row"><div class="nc-label">% Carne</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+              <div class="nc-b"><div class="nc-fill" style="width:79%;background:#991B1B;height:22px;border-radius:4px"></div><span class="mono" style="font-size:12px;margin-left:8px;color:#991B1B">79% Campofrío</span></div>
+              <div class="nc-b"><div class="nc-fill" style="width:84%;background:#0369A1;height:22px;border-radius:4px"></div><span class="mono" style="font-size:12px;margin-left:8px;color:#0369A1">84% El Pozo</span></div>
+              <div class="nc-b"><div class="nc-fill" style="width:86%;background:#9333EA;height:22px;border-radius:4px"></div><span class="mono" style="font-size:12px;margin-left:8px;color:#9333EA">86% Noel</span></div>
+              <div class="nc-b"><div class="nc-fill" style="width:88%;background:#047857;height:22px;border-radius:4px"></div><span class="mono" style="font-size:12px;margin-left:8px;color:#047857">88% Argal</span></div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:0 18px 16px;margin-top:4px;border-top:1px solid var(--g100)">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--navy);padding-top:14px;margin-bottom:10px;letter-spacing:.02em">Sal por 100g — menor es mejor</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="nc-b"><div class="nc-fill" style="width:53%;background:#991B1B;height:16px;border-radius:4px"></div><span class="mono" style="font-size:12px;margin-left:8px;color:var(--g600)">1.6g Campofrío <span style="color:var(--red);font-size:10px">▲ subió</span></span></div>
+            <div class="nc-b"><div class="nc-fill" style="width:40%;background:#0369A1;height:16px;border-radius:4px"></div><span class="mono" style="font-size:12px;margin-left:8px;color:var(--g600)">1.2g El Pozo <span style="color:var(--green);font-size:10px">▼ bajó</span></span></div>
+            <div class="nc-b"><div class="nc-fill" style="width:43%;background:#9333EA;height:16px;border-radius:4px"></div><span class="mono" style="font-size:12px;margin-left:8px;color:var(--g600)">1.3g Noel</span></div>
+            <div class="nc-b"><div class="nc-fill" style="width:47%;background:#047857;height:16px;border-radius:4px"></div><span class="mono" style="font-size:12px;margin-left:8px;color:var(--g600)">1.4g Argal</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ HISTORIAL ══════════════════ -->
+    <div class="screen" id="s-historial">
+      <div class="g2">
+        <div class="card">
+          <div class="ch"><div><div class="ct">Historial completo de cambios</div><div class="cs">Registro inmutable de todas las modificaciones detectadas</div></div>
+            <select style="font-size:12px;border:1.5px solid var(--g200);border-radius:6px;padding:5px 10px;color:var(--navy);background:#fff;font-family:'Montserrat',sans-serif;outline:none">
+              <option>Todas las marcas</option><option>Campofrío</option><option>El Pozo</option><option>Noel</option><option>Argal</option>
+            </select>
+          </div>
+          <div style="padding:12px 18px 0">
+            <div style="font-size:10.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.1em;padding-bottom:10px;border-bottom:1px solid var(--g100)">25 Mayo 2026</div>
+          </div>
+          <div class="hist-item"><div class="hist-line"><div class="hist-dot" style="background:var(--red)"></div><div class="hist-v"></div></div><div class="hist-body"><div class="hist-date">08:22 · Campofrío</div><div class="hist-desc"><strong>Jamón Cocido Extra</strong> — % carne: 82% → <strong style="color:var(--red)">79%</strong></div><span class="hist-tag" style="background:var(--redl);color:var(--red)">Ingredientes</span></div></div>
+          <div class="hist-item"><div class="hist-line"><div class="hist-dot" style="background:var(--red)"></div><div class="hist-v"></div></div><div class="hist-body"><div class="hist-date">06:14 · El Pozo</div><div class="hist-desc"><strong>Pechuga de Pavo Loncheada</strong> — Sal: 1.2g → <strong style="color:var(--green)">0.9g</strong>/100g</div><span class="hist-tag" style="background:var(--amberl);color:var(--amber)">Nutricional</span></div></div>
+          <div class="hist-item"><div class="hist-line"><div class="hist-dot" style="background:var(--tello)"></div><div class="hist-v"></div></div><div class="hist-body"><div class="hist-date">08:45 · Noel</div><div class="hist-desc"><strong>Jamón Serrano 18m Sin Sal</strong> — Nuevo producto detectado</div><span class="hist-tag" style="background:var(--ice2);color:var(--tello)">Nuevo producto</span></div></div>
+          <div style="padding:12px 18px 0"><div style="font-size:10.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.1em;padding-bottom:10px;border-bottom:1px solid var(--g100)">24 Mayo 2026</div></div>
+          <div class="hist-item"><div class="hist-line"><div class="hist-dot" style="background:var(--amber)"></div><div class="hist-v"></div></div><div class="hist-body"><div class="hist-date">18:33 · Argal</div><div class="hist-desc"><strong>Salchichón Ibérico</strong> — Añadido claim "Sin nitritos añadidos"</div><span class="hist-tag" style="background:var(--amberl);color:var(--amber)">Claims</span></div></div>
+          <div class="hist-item"><div class="hist-line"><div class="hist-dot" style="background:var(--amber)"></div><div class="hist-v"></div></div><div class="hist-body"><div class="hist-date">14:05 · El Pozo</div><div class="hist-desc"><strong>Lomo Embuchado Ibérico</strong> — Kcal: 381 → <strong style="color:var(--red)">402</strong> kcal/100g</div><span class="hist-tag" style="background:var(--amberl);color:var(--amber)">Nutricional</span></div></div>
+          <div class="hist-item"><div class="hist-line"><div class="hist-dot" style="background:var(--amber)"></div><div class="hist-v"></div></div><div class="hist-body"><div class="hist-date">09:47 · Noel</div><div class="hist-desc"><strong>Chorizo Extra</strong> — Grasas sat.: 13.2g → <strong style="color:var(--green)">11.8g</strong>/100g</div><span class="hist-tag" style="background:var(--amberl);color:var(--amber)">Nutricional</span></div></div>
+          <div style="padding:12px 18px 0"><div style="font-size:10.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.1em;padding-bottom:10px;border-bottom:1px solid var(--g100)">23 Mayo 2026</div></div>
+          <div class="hist-item"><div class="hist-line"><div class="hist-dot" style="background:var(--g300)"></div></div><div class="hist-body"><div class="hist-date">16:44 · Argal</div><div class="hist-desc"><strong>Sobrasada Mallorquina</strong> — Actualización descripción web</div><span class="hist-tag" style="background:var(--g100);color:var(--g600)">Descripción</span></div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="ch"><div class="ct">Resumen del mes</div></div>
+            <div style="padding:14px 18px;display:flex;flex-direction:column;gap:10px">
+              <div class="bw"><div style="font-size:12px;color:var(--g600);width:100px">Campofrío</div><div class="bg"><div class="bf" style="width:72%;background:#991B1B"></div></div><span class="mono" style="font-size:11px;color:var(--g400)">18</span></div>
+              <div class="bw"><div style="font-size:12px;color:var(--g600);width:100px">El Pozo</div><div class="bg"><div class="bf" style="width:56%;background:#0369A1"></div></div><span class="mono" style="font-size:11px;color:var(--g400)">14</span></div>
+              <div class="bw"><div style="font-size:12px;color:var(--g600);width:100px">Noel</div><div class="bg"><div class="bf" style="width:36%;background:#9333EA"></div></div><span class="mono" style="font-size:11px;color:var(--g400)">9</span></div>
+              <div class="bw"><div style="font-size:12px;color:var(--g600);width:100px">Argal</div><div class="bg"><div class="bf" style="width:44%;background:#047857"></div></div><span class="mono" style="font-size:11px;color:var(--g400)">11</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><div class="ct">Exportar historial</div></div>
+            <div style="padding:14px 18px;display:flex;flex-direction:column;gap:8px">
+              <button class="btn btn-pri" style="width:100%">📥 Descargar Excel (.xlsx)</button>
+              <button class="btn btn-sec" style="width:100%">📄 Exportar PDF</button>
+              <button class="btn btn-ghost" style="width:100%">📧 Enviar por email</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ CLAIMS ══════════════════ -->
+    <div class="screen" id="s-claims">
+      <div class="g4">
+        <div class="kpi b"><div class="kl">Claims únicos detectados</div><div class="kv">34</div><div class="ks">en 4 marcas</div></div>
+        <div class="kpi g"><div class="kl">Claims compartidos</div><div class="kv">12</div><div class="ks">presentes en ≥3 marcas</div></div>
+        <div class="kpi a"><div class="kl">Exclusivos de 1 marca</div><div class="kv">9</div><div class="ks">diferenciadores</div></div>
+        <div class="kpi r"><div class="kl">Claims modificados</div><div class="kv">3</div><div class="ks">este mes</div></div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct">Mapa de claims por categoría</div><div class="cs">Jamón cocido · comparativa completa</div>
+          <select style="font-size:12px;border:1.5px solid var(--g200);border-radius:6px;padding:5px 10px;color:var(--navy);background:#fff;font-family:'Montserrat',sans-serif;outline:none">
+            <option>Jamón cocido</option><option>Pechuga de pavo</option><option>Embutidos</option>
+          </select>
+        </div>
+        <div class="cgrid" style="padding:0 18px 14px">
+          <div class="ch2">Claim</div>
+          <div class="ch2" style="color:#991B1B">Campofrío</div>
+          <div class="ch2" style="color:#0369A1">El Pozo</div>
+          <div class="ch2" style="color:#9333EA">Noel</div>
+          <div class="ch2" style="color:#047857">Argal</div>
+          <div class="cl2">Sin gluten</div><div class="cc2">✅</div><div class="cc2">✅</div><div class="cc2">✅</div><div class="cc2">✅</div>
+          <div class="cl2">Sin lactosa</div><div class="cc2">✅</div><div class="cc2">❌</div><div class="cc2">✅</div><div class="cc2">✅</div>
+          <div class="cl2">Sin colorantes</div><div class="cc2">✅</div><div class="cc2">✅</div><div class="cc2">✅</div><div class="cc2">✅</div>
+          <div class="cl2">Sin conservantes</div><div class="cc2">❌</div><div class="cc2">✅</div><div class="cc2">❌</div><div class="cc2">✅</div>
+          <div class="cl2">Sin nitritos añadidos</div><div class="cc2">❌</div><div class="cc2">❌</div><div class="cc2">❌</div><div class="cc2" style="background:var(--greenl)">✅ <span style="font-size:9px;color:var(--green)">nuevo</span></div>
+          <div class="cl2">Alto en proteínas</div><div class="cc2">❌</div><div class="cc2">✅</div><div class="cc2">✅</div><div class="cc2">✅</div>
+          <div class="cl2">Reducido en sal</div><div class="cc2">❌</div><div class="cc2">✅</div><div class="cc2">❌</div><div class="cc2">❌</div>
+          <div class="cl2">Ibérico</div><div class="cc2">✅</div><div class="cc2">✅</div><div class="cc2">❌</div><div class="cc2">✅</div>
+          <div class="cl2">Elaborado en España</div><div class="cc2">✅</div><div class="cc2">✅</div><div class="cc2">✅</div><div class="cc2">✅</div>
+          <div class="cl2">Bienestar animal</div><div class="cc2">❌</div><div class="cc2">❌</div><div class="cc2">✅</div><div class="cc2">❌</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct">Claims exclusivos por marca</div><div class="cs">Solo presentes en 1 marca — oportunidades de diferenciación</div></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0">
+          <div style="padding:14px 18px;border-right:1px solid var(--g100)">
+            <div class="ab cf" style="margin-bottom:8px">Campofrío</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span class="ctag">Receta tradicional</span>
+              <span class="ctag">Calidad garantizada</span>
+            </div>
+          </div>
+          <div style="padding:14px 18px;border-right:1px solid var(--g100)">
+            <div class="ab ep" style="margin-bottom:8px">El Pozo</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span class="ctag">Reducido en sal</span>
+              <span class="ctag">Sin conservantes</span>
+            </div>
+          </div>
+          <div style="padding:14px 18px;border-right:1px solid var(--g100)">
+            <div class="ab no" style="margin-bottom:8px">Noel</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span class="ctag">Bienestar animal</span>
+              <span class="ctag">Compromiso sostenible</span>
+            </div>
+          </div>
+          <div style="padding:14px 18px">
+            <div class="ab ar" style="margin-bottom:8px">Argal</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span class="ctag">Sin nitritos añadidos</span>
+              <span class="ctag">Elaboración artesana</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ NUTRICIONAL ══════════════════ -->
+    <div class="screen" id="s-nutri">
+      <div class="g4">
+        <div class="kpi b"><div class="kl">Productos con cambio nutric.</div><div class="kv">4</div><div class="ks">último mes</div></div>
+        <div class="kpi r"><div class="kl">Mayor subida kcal</div><div class="kv">+21</div><div class="ks">El Pozo · Lomo ibérico</div></div>
+        <div class="kpi g"><div class="kl">Mayor bajada sal</div><div class="kv">-0.3g</div><div class="ks">El Pozo · Pechuga pavo</div></div>
+        <div class="kpi a"><div class="kl">Media % carne sector</div><div class="kv">84%</div><div class="ks">jamón cocido</div></div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct">Comparativa nutricional completa</div><div class="cs">Todas las categorías · por 100g</div></div>
+        <div class="tabs">
+          <div class="tab active" onclick="stab('nt','nt-cocidos',this)">Cocidos</div>
+          <div class="tab" onclick="stab('nt','nt-curados',this)">Curados</div>
+          <div class="tab" onclick="stab('nt','nt-embutidos',this)">Embutidos</div>
+          <div class="tab" onclick="stab('nt','nt-ave',this)">Fiambres de ave</div>
+        </div>
+        <div class="tc active" id="nt-cocidos">
+          <table><thead><tr><th>Marca</th><th>Producto</th><th>Kcal</th><th>Proteínas</th><th>G.Totales</th><th>G.Saturadas</th><th>Carbohidratos</th><th>Azúcares</th><th>Sal</th><th>% Carne</th></tr></thead>
+          <tbody>
+            <tr onclick="openDetail('campofrio')" style="cursor:pointer"><td><span class="bp cf">Campofrío</span></td><td>Jamón Cocido Extra</td><td class="mono">89</td><td class="mono">18.1g</td><td class="mono">1.9g</td><td class="mono">0.7g</td><td class="mono">0.8g</td><td class="mono">0.5g</td><td class="mono" style="color:var(--red)">1.6g ↑</td><td class="mono" style="color:var(--red)">79% ↓</td></tr>
+            <tr onclick="openDetail('elpozo')" style="cursor:pointer"><td><span class="bp ep">El Pozo</span></td><td>Jamón Cocido Superior</td><td class="mono">82</td><td class="mono">17.8g</td><td class="mono">1.4g</td><td class="mono">0.5g</td><td class="mono">0.6g</td><td class="mono">0.4g</td><td class="mono" style="color:var(--green)">1.2g ↓</td><td class="mono">84%</td></tr>
+            <tr><td><span class="bp no">Noel</span></td><td>Jamón Cocido Extra</td><td class="mono">85</td><td class="mono">18.4g</td><td class="mono">1.6g</td><td class="mono">0.6g</td><td class="mono">0.7g</td><td class="mono">0.4g</td><td class="mono">1.3g</td><td class="mono">86%</td></tr>
+            <tr><td><span class="bp ar">Argal</span></td><td>Jamón Cocido Premium</td><td class="mono">91</td><td class="mono">19.2g</td><td class="mono">2.1g</td><td class="mono">0.8g</td><td class="mono">0.5g</td><td class="mono">0.3g</td><td class="mono">1.4g</td><td class="mono">88%</td></tr>
+          </tbody></table>
+        </div>
+        <div class="tc" id="nt-curados">
+          <table><thead><tr><th>Marca</th><th>Producto</th><th>Kcal</th><th>Proteínas</th><th>G.Totales</th><th>G.Saturadas</th><th>Sal</th><th>% Carne</th></tr></thead>
+          <tbody>
+            <tr><td><span class="bp cf">Campofrío</span></td><td>Jamón Ibérico de Bellota</td><td class="mono">310</td><td class="mono">31.0g</td><td class="mono">20.2g</td><td class="mono">7.1g</td><td class="mono">2.1g</td><td class="mono">100%</td></tr>
+            <tr><td><span class="bp ep">El Pozo</span></td><td>Lomo Embuchado Ibérico</td><td class="mono" style="color:var(--red)">402 ↑</td><td class="mono">29.5g</td><td class="mono">31.2g</td><td class="mono">11.8g</td><td class="mono">2.4g</td><td class="mono">100%</td></tr>
+            <tr><td><span class="bp no">Noel</span></td><td>Jamón Serrano 18m S.Sal ✨</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">0g</td><td class="mono">100%</td></tr>
+          </tbody></table>
+        </div>
+        <div class="tc" id="nt-embutidos"><div class="empty-state"><div class="big">📊</div>Selecciona una subcategoría para comparar</div></div>
+        <div class="tc" id="nt-ave">
+          <table><thead><tr><th>Marca</th><th>Producto</th><th>Kcal</th><th>Proteínas</th><th>G.Totales</th><th>Sal</th><th>% Carne</th></tr></thead>
+          <tbody>
+            <tr onclick="openDetail('elpozo')" style="cursor:pointer"><td><span class="bp ep">El Pozo</span></td><td>Pechuga de Pavo Loncheada</td><td class="mono">97</td><td class="mono">19.8g</td><td class="mono">1.2g</td><td class="mono" style="color:var(--green)">0.9g ↓</td><td class="mono">84%</td></tr>
+            <tr><td><span class="bp cf">Campofrío</span></td><td>Pechuga Pavo Mediterránea ✨</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ MARCA ══════════════════ -->
+    <div class="screen" id="s-marca">
+      <div class="g4" id="marcaKpis"></div>
+      <div class="g2">
+        <div class="card">
+          <div class="ch"><div class="ct" id="marcaTitle">Productos</div><div class="cs" id="marcaSub"></div></div>
+          <div id="marcaProds"></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">Últimos cambios</div></div>
+          <div id="marcaHistory"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ CONFIG ══════════════════ -->
+    <div class="screen" id="s-config">
+      <div class="g2">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="ch"><div class="ct">Frecuencia de monitorización</div><div class="cs">Cada cuánto se revisan las webs</div></div>
+            <div class="setting-row"><div><div style="font-size:13px;font-weight:500;color:var(--g900)">Ciclo de actualización</div><div style="font-size:12px;color:var(--g400);margin-top:2px">Intervalo entre revisiones de cada web</div></div>
+              <select style="font-size:12px;border:1.5px solid var(--g200);border-radius:6px;padding:6px 10px;color:var(--navy);background:#fff;font-family:'Montserrat',sans-serif;outline:none">
+                <option>Cada 6 horas</option><option>Cada 8 horas</option><option>Cada 12 horas</option><option>Cada 24 horas</option>
+              </select>
+            </div>
+            <div class="setting-row"><div><div style="font-size:13px;font-weight:500">Próxima ejecución</div><div style="font-size:12px;color:var(--g400);margin-top:2px">Hoy a las 14:45</div></div><div style="font-size:12px;color:var(--green);font-weight:700">● Activo</div></div>
+          </div>
+          <div class="card">
+            <div class="ch"><div class="ct">Competidores monitorizados</div></div>
+            <div class="setting-row"><div><div class="ab cf" style="font-size:12px">Campofrío</div><div style="font-size:11.5px;color:var(--g400);margin-top:2px">campofrio.es · 68 productos</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row"><div><div class="ab ep" style="font-size:12px">El Pozo</div><div style="font-size:11.5px;color:var(--g400);margin-top:2px">elpozo.com · 74 productos</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row"><div><div class="ab no" style="font-size:12px">Noel</div><div style="font-size:11.5px;color:var(--g400);margin-top:2px">noel.es · 58 productos</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row"><div><div class="ab ar" style="font-size:12px">Argal</div><div style="font-size:11.5px;color:var(--g400);margin-top:2px">argal.es · 48 productos</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row" style="border-bottom:none"><div style="font-size:12px;color:var(--tello);cursor:pointer;font-weight:700">+ Añadir competidor</div></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="ch"><div class="ct">Alertas y notificaciones</div></div>
+            <div class="setting-row"><div><div style="font-size:13px;font-weight:500">Email inmediato (Crítica)</div><div style="font-size:12px;color:var(--g400);margin-top:2px">Cambios en ingredientes o alérgenos</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row"><div><div style="font-size:13px;font-weight:500">Email inmediato (Alta)</div><div style="font-size:12px;color:var(--g400);margin-top:2px">Cambios en valores nutricionales</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row"><div><div style="font-size:13px;font-weight:500">Resumen diario</div><div style="font-size:12px;color:var(--g400);margin-top:2px">Nuevos productos y cambios medios</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row"><div><div style="font-size:13px;font-weight:500">Informe semanal</div><div style="font-size:12px;color:var(--g400);margin-top:2px">Resumen completo de la semana</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row" style="border-bottom:none"><div><div style="font-size:13px;font-weight:500">Email de destino</div></div>
+              <input type="email" value="bgonzalez@tello.es" style="font-size:12px;border:1.5px solid var(--g200);border-radius:6px;padding:6px 10px;color:var(--navy);font-family:'Montserrat',sans-serif;outline:none;width:220px">
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><div class="ct">Estado del sistema</div></div>
+            <div class="setting-row"><div style="font-size:13px;font-weight:500">Scraper Campofrío</div><div style="color:var(--green);font-size:12px;font-weight:700">● Operativo</div></div>
+            <div class="setting-row"><div style="font-size:13px;font-weight:500">Scraper El Pozo</div><div style="color:var(--green);font-size:12px;font-weight:700">● Operativo</div></div>
+            <div class="setting-row"><div style="font-size:13px;font-weight:500">Scraper Noel</div><div style="color:var(--green);font-size:12px;font-weight:700">● Operativo</div></div>
+            <div class="setting-row"><div style="font-size:13px;font-weight:500">Scraper Argal</div><div style="color:var(--amber);font-size:12px;font-weight:700">⚠ Lento</div></div>
+            <div class="setting-row"><div style="font-size:13px;font-weight:500">Base de datos</div><div style="color:var(--green);font-size:12px;font-weight:700">● 42 MB / 500 MB</div></div>
+            <div class="setting-row" style="border-bottom:none"><div style="font-size:13px;font-weight:500">API Claude (IA)</div><div style="color:var(--green);font-size:12px;font-weight:700">● Activa</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- OVERLAY + DETAIL PANEL -->
+<div class="overlay" id="overlay" onclick="closeDetail()"></div>
+<div class="dp" id="dp">
+  <div class="dh">
+    <div><div id="dpBrand" class="ab" style="font-size:11px;margin-bottom:4px"></div><div id="dpName" style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:var(--navy);letter-spacing:.01em"></div><div id="dpCat" style="font-size:12px;color:var(--g400);margin-top:2px"></div></div>
+    <button class="dc" onclick="closeDetail()">✕</button>
+  </div>
+  <div class="db" id="dpBody"></div>
+</div>
+
+<script>
+// ── DATA ──
+const brands = {
+  campofrio:{ cls:'cf', label:'Campofrío', color:'#991B1B', prods:68, changes:18, newp:2 },
+  elpozo:   { cls:'ep', label:'El Pozo',   color:'#0369A1', prods:74, changes:14, newp:1 },
+  noel:     { cls:'no', label:'Noel',      color:'#9333EA', prods:58, changes:9,  newp:2 },
+  argal:    { cls:'ar', label:'Argal',     color:'#047857', prods:48, changes:11, newp:1 }
+};
+
+const products = {
+  campofrio:{
+    brand:'cf', brandLabel:'Campofrío',
+    name:'Jamón Cocido Extra', cat:'Cocidos · 200g',
+    nutri:{kcal:89,prot:'18.1g',grasas:'1.9g',carboh:'0.8g',sal:'1.6g',carne:'79%'},
+    cambio:{c1:'% Carne',a1:'82%',n1:'79%',c2:'Sal',a2:'1.4g',n2:'1.6g'},
+    ingr:'Jamón de cerdo (<mark>79%</mark>), agua, sal, dextrosa, antioxidantes (E-301, E-331), conservadores (E-250). <mark>Puede contener trazas de leche y soja.</mark>',
+    claims:['Sin gluten','Sin colorantes','Sin lactosa','Elaborado en España'],
+    time:'Hace 23 min'
+  },
+  elpozo:{
+    brand:'ep', brandLabel:'El Pozo',
+    name:'Pechuga de Pavo Loncheada', cat:'Fiambres de ave · 150g',
+    nutri:{kcal:97,prot:'19.8g',grasas:'1.2g',carboh:'1.1g',sal:'0.9g',carne:'84%'},
+    cambio:{c1:'Sal',a1:'1.2g',n1:'0.9g',c2:'Proteínas',a2:'18.9g',n2:'19.8g'},
+    ingr:'Pechuga de pavo (<mark>84%</mark>), agua, almidón de patata, sal, azúcar, antioxidantes (E-301), aromas naturales.',
+    claims:['Sin gluten','Alto en proteínas','Reducido en sal','Sin conservantes'],
+    time:'Hace 2 h'
+  }
+};
+
+// ── NAVIGATION ──
+function nav(screen, el, brand){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const s = document.getElementById('s-'+screen);
+  if(s) s.classList.add('active');
+  if(el && typeof el !== 'string') {
+    document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+    el.classList.add('active');
+  }
+  const titles = {dashboard:'Dashboard',alertas:'Alertas',productos:'Productos',comparativa:'Comparativa nutricional',historial:'Historial de cambios',claims:'Mapa de claims',nutri:'Análisis nutricional',config:'Configuración',marca:''};
+  document.getElementById('pgTitle').textContent = titles[screen]||screen;
+  if(screen==='marca' && brand){
+    renderMarca(brand);
+    document.getElementById('pgTitle').textContent = brands[brand].label;
+  }
+}
+
+function renderMarca(brand){
+  const b = brands[brand];
+  document.getElementById('marcaTitle').textContent = 'Productos · '+b.label;
+  document.getElementById('marcaSub').textContent = b.prods+' productos en catálogo';
+  document.getElementById('marcaKpis').innerHTML = `
+    <div class="kpi b"><div class="kl">Productos</div><div class="kv">${b.prods}</div><div class="ks">en catálogo</div></div>
+    <div class="kpi r"><div class="kl">Cambios este mes</div><div class="kv">${b.changes}</div><div class="ks">detectados</div></div>
+    <div class="kpi g"><div class="kl">Nuevos lanzamientos</div><div class="kv">${b.newp}</div><div class="ks">esta semana</div></div>
+    <div class="kpi a"><div class="kl">Última revisión</div><div class="kv">08:45</div><div class="ks">hoy</div></div>`;
+  const prods = [
+    {name:'Jamón Cocido Extra',cat:'Cocidos',state:'chg'},{name:'Mortadela Clásica',cat:'Embutidos',state:'chg'},
+    {name:'Salchichón Gran Reserva',cat:'Embutidos',state:'ok'},{name:'Jamón Ibérico de Bellota',cat:'Curados',state:'ok'},
+    {name:'Chorizo Casero Extra',cat:'Embutidos',state:'ok'}
+  ];
+  document.getElementById('marcaProds').innerHTML = '<table><thead><tr><th>Producto</th><th>Categoría</th><th>Estado</th></tr></thead><tbody>'+
+    prods.map(p=>`<tr><td>${p.name}</td><td><span style="font-size:12px;color:var(--g600)">${p.cat}</span></td><td><span class="cc ${p.state==='chg'?'chg':'ok'}">${p.state==='chg'?'⚠ Cambio':'✓ Sin cambios'}</span></td></tr>`).join('')+
+    '</tbody></table>';
+  document.getElementById('marcaHistory').innerHTML = `
+    <div class="hist-item"><div class="hist-line"><div class="hist-dot" style="background:var(--red)"></div><div class="hist-v"></div></div><div class="hist-body"><div class="hist-date">25/05 · 08:22</div><div class="hist-desc"><strong>Jamón Cocido Extra</strong> — % carne: 82% → 79%</div><span class="hist-tag" style="background:var(--redl);color:var(--red)">Ingredientes</span></div></div>
+    <div class="hist-item"><div class="hist-line"><div class="hist-dot" style="background:var(--red)"></div><div class="hist-v"></div></div><div class="hist-body"><div class="hist-date">25/05 · 00:10</div><div class="hist-desc"><strong>Mortadela Clásica</strong> — Se añade conservante E-252</div><span class="hist-tag" style="background:var(--redl);color:var(--red)">Ingredientes</span></div></div>
+    <div class="hist-item"><div class="hist-line"><div class="hist-dot" style="background:var(--g300)"></div></div><div class="hist-body"><div class="hist-date">23/05 · 11:20</div><div class="hist-desc"><strong>Fuet Selecta</strong> — Actualización imagen web</div><span class="hist-tag" style="background:var(--g100);color:var(--g600)">Descripción</span></div></div>`;
+}
+
+// ── CHART ──
+const months=['Dic','Ene','Feb','Mar','Abr','May'];
+const cdata={campofrio:[2,3,1,4,2,5],elpozo:[1,2,3,2,3,4],noel:[0,1,2,1,2,2],argal:[1,0,1,2,1,3]};
+const ccolors={campofrio:'#991B1B',elpozo:'#0369A1',noel:'#9333EA',argal:'#047857'};
+const maxV=14;
+const ce=document.getElementById('dashChart'),le=document.getElementById('dashLabels');
+months.forEach((m,i)=>{
+  const g=document.createElement('div');g.className='cgroup';
+  Object.keys(cdata).forEach(b=>{
+    const bar=document.createElement('div');
+    bar.className='cbar';bar.style.height=(cdata[b][i]/maxV*100)+'%';bar.style.background=ccolors[b];
+    bar.title=b+': '+cdata[b][i];g.appendChild(bar);
+  });
+  ce.appendChild(g);
+  const l=document.createElement('div');l.className='clabel';l.textContent=m;le.appendChild(l);
+});
+
+// ── TABS ──
+function stab(group,activeId,el){
+  const parent=document.getElementById(activeId).closest('.card');
+  parent.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  parent.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
+  if(el)el.classList.add('active');
+  document.getElementById(activeId).classList.add('active');
+}
+
+// ── DETAIL PANEL ──
+function openDetail(id){
+  const p=products[id];if(!p)return;
+  document.getElementById('dpBrand').className='ab '+p.brand;
+  document.getElementById('dpBrand').textContent=p.brandLabel;
+  document.getElementById('dpName').textContent=p.name;
+  document.getElementById('dpCat').textContent=p.cat;
+  document.getElementById('dpBody').innerHTML=`
+    <div>
+      <div class="dst">⚠ Cambio detectado · ${p.time}</div>
+      <div class="diff"><div class="diff-t">Modificaciones en etiquetado</div>
+        <div class="dr"><span class="dl">${p.cambio.c1}</span><span class="do">${p.cambio.a1}</span><span style="color:var(--g400)">→</span><span class="dn">${p.cambio.n1}</span></div>
+        <div class="dr"><span class="dl">${p.cambio.c2}</span><span class="do">${p.cambio.a2}</span><span style="color:var(--g400)">→</span><span class="dn">${p.cambio.n2}</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="dst">Valores nutricionales por 100g</div>
+      <div class="ng">
+        <div class="nb"><div class="nv">${p.nutri.kcal}</div><div class="nu">kcal</div><div class="nl">Energía</div></div>
+        <div class="nb"><div class="nv">${p.nutri.prot}</div><div class="nu">por 100g</div><div class="nl">Proteínas</div></div>
+        <div class="nb"><div class="nv">${p.nutri.grasas}</div><div class="nu">por 100g</div><div class="nl">Grasas</div></div>
+        <div class="nb"><div class="nv">${p.nutri.carboh}</div><div class="nu">por 100g</div><div class="nl">Carbohidr.</div></div>
+        <div class="nb"><div class="nv">${p.nutri.sal}</div><div class="nu">por 100g</div><div class="nl">Sal</div></div>
+        <div class="nb" style="background:var(--ice2)"><div class="nv" style="color:var(--tello)">${p.nutri.carne}</div><div class="nu" style="color:var(--tello)">carne</div><div class="nl">% Cárnico</div></div>
+      </div>
+    </div>
+    <div><div class="dst">Ingredientes actuales</div><div class="ingr">${p.ingr}</div></div>
+    <div><div class="dst">Claims del packaging</div><div class="ctags">${p.claims.map(c=>`<span class="ctag">${c}</span>`).join('')}</div></div>
+    <div><div class="dst">Acciones</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-pri" onclick="nav('historial')">Ver historial</button>
+        <button class="btn btn-sec">Exportar ficha</button>
+        <button class="btn btn-ghost">Abrir web →</button>
+      </div>
+    </div>`;
+  document.getElementById('dp').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closeDetail(){
+  document.getElementById('dp').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ── CHIPS ──
+function filterChip(el){
+  el.closest('div').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>

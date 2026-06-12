@@ -1,0 +1,126 @@
+# =============================================================================
+# GitHub Actions — Agente de Inteligencia Competitiva Tello
+# Se ejecuta automáticamente en la nube sin necesidad de PC encendido
+# =============================================================================
+
+name: Intel Competitiva · Scraping + Alertas
+
+on:
+  schedule:
+    - cron: '0 5 * * *'    # 07:00 España (CEST, UTC+2) — HTML scrapers
+    - cron: '5 5 * * *'    # 07:05 España — El Pozo (job propio)
+    - cron: '0 10 * * *'   # 12:00 España (CEST, UTC+2) — HTML scrapers
+    - cron: '5 10 * * *'   # 12:05 España — El Pozo
+    - cron: '15 6 * * *'   # 08:15 España — Informe diario (tras el scraping de las 7h)
+
+  workflow_dispatch:
+
+env:
+  DATABASE_URL:      ${{ secrets.DATABASE_URL }}
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+  MISTRAL_API_KEY:   ${{ secrets.MISTRAL_API_KEY }}
+  SENDGRID_API_KEY:  ${{ secrets.SENDGRID_API_KEY }}
+  SMTP_HOST:         ${{ secrets.SMTP_HOST }}
+  SMTP_PORT:         ${{ secrets.SMTP_PORT }}
+  SMTP_USER:         ${{ secrets.SMTP_USER }}
+  SMTP_PASSWORD:     ${{ secrets.SMTP_PASSWORD }}
+  EMAIL_FROM:        ${{ secrets.EMAIL_FROM }}
+  EMAIL_TO:          ${{ secrets.EMAIL_TO }}
+  # Node.js 24 requerido a partir del 16 de junio de 2026
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  # ── JOB 1: Noel + Campofrío + Argal (~30 min con fix Vision) ─────────────
+  scraping-rapido:
+    name: Scraping Noel · Campofrío · Argal
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'schedule' &&
+       (contains(github.event.schedule, '0 5') || contains(github.event.schedule, '0 10')))
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: 📦 Instalar dependencias
+        run: pip install --upgrade pip && pip install -r requirements.txt
+      - name: 🌐 Instalar Playwright
+        run: python -m playwright install chromium --with-deps
+
+      - name: 🔍 Scraping Noel
+        run: python main.py --competidor noel --sin-alertas
+        continue-on-error: true
+      - name: 🔍 Scraping Campofrío
+        run: python main.py --competidor campofrio --sin-alertas
+        continue-on-error: true
+      - name: 🔍 Scraping Argal
+        run: python main.py --competidor argal --sin-alertas
+        continue-on-error: true
+      - name: 📧 Enviar alertas críticas
+        run: python alertas_scheduler.py --tipo nuevos
+        continue-on-error: true
+      - name: 📋 Subir log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: log-rapido-${{ github.run_number }}
+          path: agente_etiquetado.log
+          retention-days: 7
+
+  # ── JOB 2: El Pozo solo (Vision API, más lento) ──────────────────────────
+  scraping-elpozo:
+    name: Scraping El Pozo
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'schedule' &&
+       (contains(github.event.schedule, '5 5') || contains(github.event.schedule, '5 10')))
+    timeout-minutes: 180
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: 📦 Instalar dependencias
+        run: pip install --upgrade pip && pip install -r requirements.txt
+      - name: 🌐 Instalar Playwright
+        run: python -m playwright install chromium --with-deps
+      - name: 🔍 Scraping El Pozo
+        run: python main.py --competidor elpozo --sin-alertas
+        continue-on-error: true
+      - name: 📧 Enviar alertas críticas
+        run: python alertas_scheduler.py --tipo nuevos
+        continue-on-error: true
+      - name: 📋 Subir log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: log-elpozo-${{ github.run_number }}
+          path: agente_etiquetado.log
+          retention-days: 7
+
+  # ── JOB 3: Informe diario (08:15, tras el scraping de las 7h) ────────────
+  informe-diario:
+    name: Informe diario por email
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'schedule' && contains(github.event.schedule, '15 6'))
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: 📦 Instalar dependencias
+        run: pip install --upgrade pip && pip install anthropic psycopg2-binary python-dotenv
+      - name: 📧 Enviar informe diario
+        run: python alertas_scheduler.py --tipo informe

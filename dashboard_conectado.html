@@ -1,0 +1,2089 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tello · Intel Competitiva — Etiquetado</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --tello:#BA0C2F; --tello2:#8B0A24; --tello3:#D4143A;
+  --navy:#1A1A1A; --navy2:#2D2D2D;
+  --blue:#BA0C2F; --blue2:#D4143A;
+  --ice:#FFF0F3; --ice2:#FFD6DE; --white:#FFFFFF;
+  --g50:#F8FAFC; --g100:#F1F5F9; --g200:#E2E8F0; --g300:#CBD5E1;
+  --g400:#94A3B8; --g600:#475569; --g900:#1A1A1A;
+  --red:#DC2626; --redl:#FEE2E2; --amber:#D97706; --amberl:#FEF3C7;
+  --green:#16A34A; --greenl:#DCFCE7; --purple:#7C3AED; --purplel:#EDE9FE;
+  --sw:224px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Montserrat',sans-serif;background:var(--g50);color:var(--g900);display:flex;height:100vh;overflow:hidden;font-size:14px;}
+/* ── RESPONSIVE ── */
+@media(max-width:1400px){:root{--sw:200px;} .g4{grid-template-columns:repeat(2,1fr);} .kv{font-size:26px;}}
+@media(max-width:1100px){:root{--sw:180px;} .g4{grid-template-columns:repeat(2,1fr);} .g2{grid-template-columns:1fr;} .g3{grid-template-columns:repeat(2,1fr);} #s-productos>div{flex-direction:column!important;} #s-productos>div>div:first-child{width:100%!important;flex-direction:row!important;flex-wrap:wrap;}}
+@media(max-width:800px){:root{--sw:0px;} .sb{display:none;} .g4{grid-template-columns:repeat(2,1fr);} .topbar{padding:0 12px;} .content{padding:12px;}}
+/* Tablas con scroll horizontal */
+table{width:100%;border-collapse:collapse;min-width:500px;}
+.card{overflow:hidden;}
+.card table{display:block;overflow-x:auto;width:100%;}
+/* Sidebar nunca más pequeña que 200px en productos */
+#s-productos>div>div:first-child{min-width:200px!important;}
+.sb{width:var(--sw);background:var(--navy);display:flex;flex-direction:column;flex-shrink:0;z-index:10;overflow-y:auto;overflow-x:hidden;}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.08);}
+.tello-badge{display:inline-flex;align-items:center;background:var(--tello);border-radius:4px;padding:3px 10px 3px 10px;margin-bottom:6px;}
+.tello-badge span{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:#fff;font-style:italic;letter-spacing:.02em;}
+.sb-logo .brand{font-size:10.5px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;}
+.sb-logo .sub{font-size:10px;color:rgba(255,255,255,.25);margin-top:2px;letter-spacing:.03em;}
+.sb-sec{padding:14px 12px 4px;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:.12em;text-transform:uppercase;}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 14px;margin:1px 8px;border-radius:6px;cursor:pointer;color:rgba(255,255,255,.45);font-size:12.5px;font-weight:500;transition:all .15s;}
+.ni:hover{background:rgba(255,255,255,.06);color:#fff;}
+.ni.active{background:var(--tello);color:#fff;}
+.ni .ic{font-size:15px;width:18px;text-align:center;}
+.ni .badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+.sb-bot{margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,.07);}
+.live{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.05);border-radius:6px;font-size:11px;color:rgba(255,255,255,.35);}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#22C55E;flex-shrink:0;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4);}50%{box-shadow:0 0 0 4px rgba(34,197,94,0);}}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{background:#fff;border-bottom:1px solid var(--g200);padding:0 16px 0 24px;height:54px;display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;min-height:54px;}
+.pg-title{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;color:var(--navy);letter-spacing:.02em;white-space:nowrap;}
+.tb-right{display:flex;gap:6px;margin-left:auto;align-items:center;flex-wrap:wrap;}
+.chip{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--g200);background:#fff;color:var(--g600);transition:all .15s;white-space:nowrap;}
+.chip:hover{border-color:var(--tello);color:var(--tello);}
+.chip.active{background:var(--tello);border-color:var(--tello);color:#fff;}
+.upd{font-size:11px;color:var(--g400);font-family:'Courier New',monospace;padding-left:10px;border-left:1px solid var(--g200);white-space:nowrap;}
+.content{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:14px;min-width:0;}
+.screen{display:none;flex-direction:column;gap:14px;}
+.screen.active{display:flex;}
+.card{background:#fff;border-radius:8px;border:1px solid var(--g200);overflow:hidden;min-width:0;}
+.ch{padding:12px 16px 10px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.ct{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--navy);letter-spacing:.02em;}
+.cs{font-size:11px;color:var(--g400);margin-top:1px;}
+.ca{font-size:11px;color:var(--tello);cursor:pointer;font-weight:600;white-space:nowrap;}
+.g2{display:grid;grid-template-columns:1fr 320px;gap:14px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.kpi{background:#fff;border-radius:8px;padding:14px 16px;border:1px solid var(--g200);position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s;cursor:default;min-width:0;}
+.kpi:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.07);}
+.kpi::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;border-radius:8px 0 0 8px;}
+.kpi.r::before{background:var(--red);}
+.kpi.b::before{background:var(--tello);}
+.kpi.g::before{background:var(--green);}
+.kpi.a::before{background:var(--amber);}
+.kpi.p::before{background:var(--purple);}
+.kl{font-size:10px;color:var(--g400);font-weight:600;text-transform:uppercase;letter-spacing:.07em;}
+.kv{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:var(--navy);margin:3px 0 2px;line-height:1;letter-spacing:.01em;}
+.ks{font-size:10.5px;color:var(--g400);}
+.kb{position:absolute;top:14px;right:14px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.kb.r{background:var(--redl);color:var(--red);}
+.kb.g{background:var(--greenl);color:var(--green);}
+.kb.a{background:var(--amberl);color:var(--amber);}
+.ali{padding:12px 18px;border-bottom:1px solid var(--g100);display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:background .1s;animation:fadeIn .3s ease both;}
+.ali:hover{background:var(--g50);}
+.ali:last-child{border-bottom:none;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+.ad{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+.ad.crit{background:var(--red);box-shadow:0 0 0 3px rgba(220,38,38,.15);}
+.ad.alta{background:var(--amber);}
+.ad.new{background:var(--tello);}
+.ad.baja{background:var(--g300);}
+.ab{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px;}
+.ab.cf{color:#991B1B;} .ab.ep{color:#0369A1;} .ab.no{color:#9333EA;} .ab.ar{color:#047857;}
+.adesc{font-size:12.5px;color:var(--g900);line-height:1.4;}
+.atime{font-size:11px;color:var(--g400);margin-top:3px;font-family:'Courier New',monospace;}
+.atag{margin-left:auto;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0;}
+.atag.crit{background:var(--redl);color:var(--red);}
+.atag.alta{background:var(--amberl);color:var(--amber);}
+.atag.new{background:var(--ice2);color:var(--tello);}
+.atag.baja{background:var(--g100);color:var(--g600);}
+table{width:100%;border-collapse:collapse;}
+th{padding:9px 14px;text-align:left;font-size:10.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.07em;background:var(--g50);border-bottom:1px solid var(--g200);}
+td{padding:10px 14px;font-size:12.5px;border-bottom:1px solid var(--g100);color:var(--g900);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--g50);}
+.mono{font-family:'Courier New',monospace;font-size:12px;}
+.bp{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.bp.cf{background:#FEE2E2;color:#991B1B;}
+.bp.ep{background:#E0F2FE;color:#0369A1;}
+.bp.no{background:#F3E8FF;color:#9333EA;}
+.bp.ar{background:#D1FAE5;color:#047857;}
+.cc{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:4px;font-size:10.5px;font-weight:600;cursor:pointer;}
+.cc.chg{background:var(--redl);color:var(--red);}
+.cc.ok{background:var(--greenl);color:var(--green);}
+.cc.nw{background:var(--ice2);color:var(--tello);}
+.bw{display:flex;align-items:center;gap:8px;}
+.bg{flex:1;height:6px;background:var(--g100);border-radius:3px;overflow:hidden;}
+.bf{height:100%;border-radius:3px;transition:width .6s ease;}
+.tabs{display:flex;border-bottom:1px solid var(--g200);}
+.tab{padding:11px 18px;font-size:12.5px;font-weight:500;color:var(--g400);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;}
+.tab:hover{color:var(--navy);}
+.tab.active{color:var(--tello);border-bottom-color:var(--tello);font-weight:700;}
+.tc{display:none;} .tc.active{display:block;}
+.cbars{display:flex;align-items:flex-end;gap:6px;height:90px;margin-bottom:6px;}
+.cgroup{flex:1;display:flex;align-items:flex-end;gap:2px;}
+.cbar{flex:1;border-radius:3px 3px 0 0;cursor:pointer;transition:opacity .15s;}
+.cbar:hover{opacity:.75;}
+.clabels{display:flex;gap:6px;}
+.clabel{flex:1;text-align:center;font-size:10px;color:var(--g400);font-family:'Courier New',monospace;}
+.legend{display:flex;gap:12px;flex-wrap:wrap;padding:8px 0 2px;}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600);}
+.ld{width:8px;height:8px;border-radius:2px;}
+.cgrid{display:grid;grid-template-columns:170px repeat(4,1fr);}
+.ch2{padding:10px 6px 8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);text-align:center;}
+.ch2:first-child{text-align:left;}
+.cl2{padding:8px 6px;font-size:12px;color:var(--g600);border-bottom:1px solid var(--g100);display:flex;align-items:center;}
+.cc2{padding:8px 6px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.2);z-index:99;opacity:0;pointer-events:none;transition:opacity .25s;}
+.overlay.show{opacity:1;pointer-events:all;}
+.dp{position:fixed;right:0;top:0;bottom:0;width:420px;background:#fff;border-left:1px solid var(--g200);z-index:100;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-8px 0 32px rgba(0,0,0,.08);}
+.dp.open{transform:translateX(0);}
+.dh{padding:18px 20px 14px;border-bottom:1px solid var(--g200);display:flex;align-items:flex-start;gap:12px;}
+.dc{margin-left:auto;width:28px;height:28px;border-radius:6px;background:var(--g100);border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--g600);flex-shrink:0;}
+.dc:hover{background:var(--g200);}
+.db{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:16px;}
+.dst{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--g400);margin-bottom:8px;}
+.ng{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.nb{background:var(--g50);border-radius:6px;padding:10px 12px;text-align:center;}
+.nv{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--navy);}
+.nu{font-size:10px;color:var(--g400);font-weight:500;}
+.nl{font-size:11px;color:var(--g600);margin-top:3px;}
+.diff{background:var(--redl);border:1px solid #FECACA;border-radius:6px;padding:12px 14px;}
+.diff-t{font-size:12px;font-weight:700;color:var(--red);margin-bottom:8px;}
+.dr{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;}
+.dl{color:var(--g600);min-width:90px;}
+.do{color:var(--red);text-decoration:line-through;font-family:'Courier New',monospace;}
+.dn{color:var(--green);font-weight:600;font-family:'Courier New',monospace;}
+.ingr{font-size:12px;color:var(--g600);line-height:1.6;background:var(--g50);border-radius:6px;padding:10px 12px;}
+.ingr mark{background:var(--amberl);color:var(--amber);padding:0 2px;border-radius:2px;font-weight:600;}
+.ctags{display:flex;flex-wrap:wrap;gap:6px;}
+.ctag{padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600;background:var(--ice);color:var(--tello);border:1px solid var(--ice2);}
+.hist-item{display:flex;gap:14px;padding:12px 18px;border-bottom:1px solid var(--g100);}
+.hist-item:last-child{border-bottom:none;}
+.hist-line{display:flex;flex-direction:column;align-items:center;gap:0;}
+.hist-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.hist-v{flex:1;width:1px;background:var(--g200);margin:2px 0;}
+.hist-body{flex:1;padding-bottom:4px;}
+.hist-date{font-size:11px;color:var(--g400);font-family:'Courier New',monospace;margin-bottom:3px;}
+.hist-desc{font-size:12.5px;color:var(--g900);line-height:1.4;}
+.hist-tag{display:inline-block;margin-top:4px;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;}
+.search-wrap{position:relative;}
+.search-wrap input{width:100%;padding:9px 14px 9px 36px;border:1.5px solid var(--g200);border-radius:6px;font-size:12.5px;font-family:'Montserrat',sans-serif;color:var(--g900);background:#fff;outline:none;transition:border-color .15s;}
+.search-wrap input:focus{border-color:var(--tello);}
+.search-wrap::before{content:'🔍';position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--g100);}
+.setting-row:last-child{border-bottom:none;}
+.toggle{width:40px;height:22px;border-radius:11px;background:var(--g200);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:var(--tello);}
+.toggle::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle.on::after{transform:translateX(18px);}
+.prod-item{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--g100);cursor:pointer;transition:background .1s;}
+.prod-item:hover{background:var(--g50);}
+.prod-item:last-child{border-bottom:none;}
+.prod-icon{width:38px;height:38px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.nc-wrap{padding:16px 18px;}
+.nc-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.nc-label{font-size:12px;color:var(--g600);width:80px;flex-shrink:0;}
+.nc-bars{flex:1;display:flex;flex-direction:column;gap:4px;}
+.nc-b{display:flex;align-items:center;gap:6px;}
+.nc-fill{height:10px;border-radius:5px;min-width:4px;transition:width .7s ease;}
+.nc-val{font-size:11px;font-family:'Courier New',monospace;color:var(--g400);width:36px;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--g200);border-radius:2px;}
+.empty-state{padding:48px;text-align:center;color:var(--g400);font-size:13px;}
+.empty-state .big{font-size:32px;margin-bottom:8px;}
+.new-banner{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#1A1A1A 0%,#BA0C2F 100%);color:#fff;padding:10px 16px;border-radius:6px;font-size:12.5px;}
+.btn{padding:8px 14px;border-radius:6px;font-size:12px;font-family:'Montserrat',sans-serif;cursor:pointer;font-weight:700;border:none;transition:all .15s;}
+.btn-pri{background:var(--tello);color:#fff;}
+.btn-pri:hover{background:var(--tello2);}
+.btn-sec{background:var(--ice);color:var(--tello);border:1px solid var(--ice2);}
+.btn-sec:hover{background:var(--ice2);}
+.btn-ghost{background:#fff;color:var(--g600);border:1px solid var(--g200);}
+.btn-ghost:hover{background:var(--g50);}
+.tello-rule{height:2px;background:var(--tello);border:none;margin:0;}
+.loading{display:flex;align-items:center;gap:8px;padding:24px 18px;color:var(--g400);font-size:12.5px;}
+.spin{width:14px;height:14px;border:2px solid var(--g200);border-top-color:var(--tello);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@media print {
+  .sb, .topbar { display:none!important; }
+  .content { padding:0!important; }
+  .screen { display:none!important; }
+  .screen.active { display:flex!important; }
+  .btn { display:none!important; }
+}
+/* ── FILTER SIDEBAR ── */
+input[type="checkbox"]{accent-color:var(--tello);width:13px;height:13px;cursor:pointer;flex-shrink:0;}
+.active-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;background:var(--ice2);color:var(--tello);border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--tello);}
+.active-chip button{background:none;border:none;cursor:pointer;color:var(--tello);font-size:13px;padding:0;line-height:1;font-weight:700;}
+#s-productos{flex-direction:row!important;overflow:hidden;}
+/* ── HIST EXPAND ── */
+.hist-expand{display:none;margin-top:8px;padding:8px 10px;background:var(--g50);border-radius:6px;font-size:12px;border-left:2px solid var(--tello);}
+.hist-item:hover .hist-expand-hint{opacity:1;}
+.hist-expand-hint{font-size:10px;color:var(--tello);opacity:0;transition:opacity .2s;}
+
+/* ── CLAIMS PRIORITY STYLES ── */
+:root {
+  --cyan:#0891B2; --cyanl:#ECFEFF;
+  --claim-nutricion:#0369A1; --claim-nutricion-bg:#E0F2FE;
+  --claim-proceso:#92400E; --claim-proceso-bg:#FEF3C7;
+  --claim-cert:#047857; --claim-cert-bg:#D1FAE5;
+  --claim-gama:#6D28D9; --claim-gama-bg:#EDE9FE;
+}
+/* Pill de claim con color por categoría */
+.cpill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;margin:2px 3px 2px 0;white-space:nowrap;}
+.cpill.nutricion{background:var(--claim-nutricion-bg);color:var(--claim-nutricion);}
+.cpill.proceso{background:var(--claim-proceso-bg);color:var(--claim-proceso);}
+.cpill.cert{background:var(--claim-cert-bg);color:var(--claim-cert);}
+.cpill.gama{background:var(--claim-gama-bg);color:var(--claim-gama);}
+.cpill.add{background:#DCFCE7;color:#16A34A;}
+.cpill.del{background:#FEE2E2;color:#DC2626;text-decoration:line-through;}
+/* Hero KPI — doble ancho */
+.kpi-hero{grid-column:span 2;background:linear-gradient(135deg,#0F172A 0%,var(--tello) 100%);
+  border-radius:8px;padding:18px 20px;position:relative;overflow:hidden;cursor:default;}
+.kpi-hero::after{content:'';position:absolute;right:-20px;top:-20px;width:120px;height:120px;
+  border-radius:50%;background:rgba(255,255,255,.05);}
+.kpi-hero .kl{color:rgba(255,255,255,.6);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+.kpi-hero .kv{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:700;color:#fff;line-height:1;margin:4px 0 2px;letter-spacing:.01em;}
+.kpi-hero .ks{color:rgba(255,255,255,.5);font-size:11px;}
+.kpi-hero .kbadge{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.15);
+  color:#fff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+/* Feed de claims recientes */
+.claim-feed-item{padding:12px 18px;border-bottom:1px solid var(--g100);display:flex;
+  align-items:flex-start;gap:12px;cursor:pointer;transition:background .1s;}
+.claim-feed-item:hover{background:var(--g50);}
+.claim-feed-item:last-child{border-bottom:none;}
+.cfi-left{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;}
+.cfi-brand{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;}
+.cfi-prod{font-size:13px;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cfi-pills{display:flex;flex-wrap:wrap;gap:0;}
+.cfi-date{font-size:10.5px;color:var(--g400);font-family:'Courier New',monospace;flex-shrink:0;padding-top:2px;}
+/* Nuevos productos — card grid */
+.new-prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;padding:14px 18px;}
+.new-prod-card{border:1px solid var(--g200);border-radius:8px;padding:14px;
+  position:relative;overflow:hidden;cursor:pointer;transition:all .15s;background:#fff;}
+.new-prod-card:hover{border-color:var(--tello);box-shadow:0 4px 14px rgba(186,12,47,.1);transform:translateY(-1px);}
+.new-prod-card::before{content:'✨ NUEVO';position:absolute;top:10px;right:10px;
+  background:var(--tello);color:#fff;font-size:9px;font-weight:800;letter-spacing:.08em;
+  padding:2px 7px;border-radius:10px;}
+.npc-brand{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;}
+.npc-name{font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;line-height:1.3;}
+.npc-cat{font-size:11px;color:var(--g400);margin-bottom:8px;}
+.npc-claims{display:flex;flex-wrap:wrap;gap:0;}
+.npc-date{font-size:10px;color:var(--g400);font-family:'Courier New',monospace;margin-top:8px;
+  border-top:1px solid var(--g100);padding-top:6px;}
+/* Sidebar nav item destacado para claims */
+.ni.featured{background:linear-gradient(90deg,rgba(186,12,47,.2) 0%,rgba(186,12,47,.06) 100%);
+  color:rgba(255,255,255,.8);border-left:3px solid var(--tello);margin-left:5px;margin-right:5px;border-radius:5px;padding-left:11px;}
+.ni.featured:hover,.ni.featured.active{background:var(--tello);color:#fff;border-left-color:var(--tello);}
+.ni .badge-cyan{margin-left:auto;background:#0891B2;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+/* Franja de aviso en dashboard */
+.claims-banner{background:linear-gradient(135deg,#0F172A 0%,#0891B2 100%);
+  border-radius:8px;padding:14px 20px;display:flex;align-items:center;gap:14px;color:#fff;}
+.claims-banner-icon{font-size:26px;flex-shrink:0;}
+.claims-banner-text .title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.02em;}
+.claims-banner-text .sub{font-size:12px;color:rgba(255,255,255,.55);margin-top:2px;}
+.claims-banner .btn-white{margin-left:auto;background:rgba(255,255,255,.15);color:#fff;
+  border:1px solid rgba(255,255,255,.3);padding:7px 14px;border-radius:6px;
+  font-size:12px;font-family:'Montserrat',sans-serif;cursor:pointer;font-weight:700;
+  transition:background .15s;}
+.claims-banner .btn-white:hover{background:rgba(255,255,255,.25);}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sb">
+  <div class="sb-logo">
+    <div class="tello-badge"><span>Tello</span></div>
+    <div class="brand">Intel Competitiva</div>
+    <div class="sub">Etiquetado · v1.0</div>
+  </div>
+  <div class="sb-sec">Principal</div>
+  <div class="ni active" onclick="nav('dashboard',this)"><span class="ic">⊞</span> Dashboard</div>
+  <div class="ni featured" onclick="nav('claims',this)"><span class="ic">🏷</span> Claims <span class="badge-cyan" id="badgeClaims">—</span></div>
+  <div class="ni featured" onclick="nav('nuevos',this)"><span class="ic">✨</span> Nuevos productos <span class="badge" id="badgeNuevos">—</span></div>
+  <div class="ni" onclick="nav('alertas',this)"><span class="ic">⚠</span> Alertas <span class="badge" id="badgeAlertas">—</span></div>
+  <div class="ni" onclick="nav('productos',this)"><span class="ic">◫</span> Productos</div>
+  <div class="sb-sec">Análisis</div>
+  <div class="ni" onclick="nav('comparativa',this)"><span class="ic">⊡</span> Comparativa</div>
+  <div class="ni" onclick="nav('historial',this)"><span class="ic">∿</span> Historial cambios</div>
+  <div class="ni" onclick="nav('nutri',this)"><span class="ic">◈</span> Nutricional</div>
+  <div class="sb-sec">Competidores</div>
+  <div class="ni" onclick="nav('marca',this,'campofrio')"><span class="ic" style="color:#F87171">●</span> Campofrío</div>
+  <div class="ni" onclick="nav('marca',this,'elpozo')"><span class="ic" style="color:#38BDF8">●</span> El Pozo</div>
+  <div class="ni" onclick="nav('marca',this,'noel')"><span class="ic" style="color:#C084FC">●</span> Noel</div>
+  <div class="ni" onclick="nav('marca',this,'argal')"><span class="ic" style="color:#4ADE80">●</span> Argal</div>
+  <div class="sb-sec">Sistema</div>
+  <div class="ni" onclick="nav('config',this)"><span class="ic">⚙</span> Configuración</div>
+  <div class="sb-bot">
+    <div class="live"><div class="live-dot"></div><span id="liveText">Ciclo activo · —</span></div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="pg-title" id="pgTitle">Dashboard</div>
+    <div class="tb-right" id="tbRight"></div>
+    <div class="upd" id="updTime">Actualizado: —</div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="screen active" id="s-dashboard">
+
+      <!-- BANNER DE CLAIMS — primera cosa que ve el usuario -->
+      <div class="claims-banner" id="dash-claims-banner" style="display:none">
+        <div class="claims-banner-icon">🏷️</div>
+        <div class="claims-banner-text">
+          <div class="title" id="dash-banner-title">Cambios en claims detectados</div>
+          <div class="sub" id="dash-banner-sub">Cargando…</div>
+        </div>
+        <button class="btn-white" onclick="nav('claims',document.querySelector('.ni.featured'))">Ver mapa de claims →</button>
+      </div>
+
+      <!-- HERO KPIs — claims y nuevos productos son los protagonistas -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px" id="dash-kpi-grid">
+        <!-- Hero: Claims -->
+        <div class="kpi-hero" style="cursor:pointer" onclick="nav('claims',document.querySelectorAll('.ni.featured')[0])">
+          <div class="kl">🏷️ Claims modificados</div>
+          <div class="kv" id="kpi-claims">—</div>
+          <div class="ks">esta semana · packaging competencia</div>
+          <div class="kbadge" id="kpi-claims-badge">Ver →</div>
+        </div>
+        <!-- Hero: Nuevos productos -->
+        <div class="kpi-hero" style="cursor:pointer;background:linear-gradient(135deg,#0F172A 0%,#7C3AED 100%)" onclick="nav('nuevos',document.querySelectorAll('.ni.featured')[1])">
+          <div class="kl">✨ Nuevos productos</div>
+          <div class="kv" id="kpi-nuevos">—</div>
+          <div class="ks">detectados esta semana</div>
+          <div class="kbadge" id="kpi-nuevos-badge">Ver todos →</div>
+        </div>
+        <!-- KPI normal: críticos -->
+        <div class="kpi r"><div class="kl">Cambios críticos</div><div class="kv" id="kpi-criticos">—</div><div class="ks">últimas 24 horas</div><div class="kb r">↑ Urgente</div></div>
+        <!-- KPI normal: monitorizados -->
+        <div class="kpi b"><div class="kl">Productos monitorizados</div><div class="kv" id="kpi-productos">—</div><div class="ks">4 competidores activos</div><div class="kb g" id="kpi-nuevos-sub">—</div></div>
+      </div>
+
+      <!-- FILA PRINCIPAL: feed claims + nuevos productos -->
+      <div class="g2" style="grid-template-columns:1fr 1fr">
+        <!-- Feed de últimos cambios en claims -->
+        <div class="card">
+          <div class="ch">
+            <div>
+              <div class="ct" style="color:var(--cyan)">🏷️ Últimos cambios en claims</div>
+              <div class="cs">Claims añadidos, modificados o retirados del packaging</div>
+            </div>
+            <div class="ca" onclick="nav('claims',document.querySelectorAll('.ni.featured')[0])">Ver mapa completo →</div>
+          </div>
+          <div id="dash-claims-feed">
+            <div class="loading"><div class="spin"></div>Cargando claims…</div>
+          </div>
+        </div>
+        <!-- Nuevos productos esta semana -->
+        <div class="card">
+          <div class="ch">
+            <div>
+              <div class="ct" style="color:var(--purple)">✨ Nuevos productos esta semana</div>
+              <div class="cs">Lanzamientos detectados en la competencia</div>
+            </div>
+            <div class="ca" onclick="nav('nuevos',document.querySelectorAll('.ni.featured')[1])">Ver todos →</div>
+          </div>
+          <div id="dash-nuevos-cards">
+            <div class="loading"><div class="spin"></div>Cargando nuevos productos…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILA SECUNDARIA: alertas + actividad -->
+      <div class="g2">
+        <div class="card">
+          <div class="ch"><div><div class="ct">Otras alertas recientes</div><div class="cs">Cambios en ingredientes y nutricional</div></div><div class="ca" onclick="nav('alertas')">Ver todas →</div></div>
+          <div id="dash-alertas"><div class="loading"><div class="spin"></div>Cargando alertas…</div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div><div class="ct">Actividad de cambios</div><div class="cs">Últimos 6 meses</div></div></div>
+          <div style="padding:14px 18px 10px">
+            <div class="cbars" id="dashChart"></div>
+            <div class="clabels" id="dashLabels"></div>
+            <div class="legend">
+              <div class="li"><div class="ld" style="background:#991B1B"></div>Campofrío</div>
+              <div class="li"><div class="ld" style="background:#0369A1"></div>El Pozo</div>
+              <div class="li"><div class="ld" style="background:#9333EA"></div>Noel</div>
+              <div class="li"><div class="ld" style="background:#047857"></div>Argal</div>
+            </div>
+          </div>
+          <div style="padding:0 18px 14px;border-top:1px solid var(--g100);margin-top:4px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--navy);padding-top:12px;margin-bottom:8px;letter-spacing:.02em">Distribución por tipo</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div class="bw"><div style="font-size:11.5px;color:var(--g600);width:90px">Claims</div><div class="bg"><div class="bf" style="width:10%;background:var(--cyan)"></div></div><span class="mono" style="font-size:11px;color:var(--g400);width:28px;text-align:right" id="pct-claims">—</span></div>
+              <div class="bw"><div style="font-size:11.5px;color:var(--g600);width:90px">Ingredientes</div><div class="bg"><div class="bf" style="width:68%;background:var(--tello)"></div></div><span class="mono" style="font-size:11px;color:var(--g400);width:28px;text-align:right">—</span></div>
+              <div class="bw"><div style="font-size:11.5px;color:var(--g600);width:90px">Nutricional</div><div class="bg"><div class="bf" style="width:22%;background:var(--amber)"></div></div><span class="mono" style="font-size:11px;color:var(--g400);width:28px;text-align:right">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparativa rápida -->
+      <div class="card">
+        <div class="tabs"><div class="tab active" onclick="stab('ct','ct-comp',this)">Comparativa rápida</div></div>
+        <div class="tc active" id="ct-comp">
+          <table><thead><tr><th>Marca</th><th>Producto</th><th>% Carne</th><th>Kcal</th><th>Proteínas</th><th>Sal</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr style="cursor:pointer" onclick="openDetail('')"><td><span class="bp cf">Campofrío</span></td><td>Jamón Cocido Extra</td><td><div class="bw"><div class="bg" style="width:60px"><div class="bf" style="width:79%;background:#991B1B"></div></div><span class="mono" style="font-size:11px">79%</span></div></td><td class="mono">89</td><td class="mono">18.1g</td><td class="mono">1.6g</td><td><span class="cc chg">⚠ Cambio</span></td></tr>
+            <tr style="cursor:pointer" onclick="openDetail('')"><td><span class="bp ep">El Pozo</span></td><td>Jamón Cocido Superior</td><td><div class="bw"><div class="bg" style="width:60px"><div class="bf" style="width:84%;background:#0369A1"></div></div><span class="mono" style="font-size:11px">84%</span></div></td><td class="mono">82</td><td class="mono">17.8g</td><td class="mono">1.2g</td><td><span class="cc chg">⚠ Cambio</span></td></tr>
+            <tr><td><span class="bp no">Noel</span></td><td>Jamón Cocido Extra</td><td><div class="bw"><div class="bg" style="width:60px"><div class="bf" style="width:86%;background:#9333EA"></div></div><span class="mono" style="font-size:11px">86%</span></div></td><td class="mono">85</td><td class="mono">18.4g</td><td class="mono">1.3g</td><td><span class="cc ok">✓ Sin cambios</span></td></tr>
+            <tr><td><span class="bp ar">Argal</span></td><td>Jamón Cocido Premium</td><td><div class="bw"><div class="bg" style="width:60px"><div class="bf" style="width:88%;background:#047857"></div></div><span class="mono" style="font-size:11px">88%</span></div></td><td class="mono">91</td><td class="mono">19.2g</td><td class="mono">1.4g</td><td><span class="cc ok">✓ Sin cambios</span></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- NUEVOS PRODUCTOS (pantalla dedicada) -->
+    <div class="screen" id="s-nuevos">
+      <div class="g4">
+        <div class="kpi-hero" style="grid-column:span 2">
+          <div class="kl">✨ Nuevos productos detectados</div>
+          <div class="kv" id="np-total">—</div>
+          <div class="ks">en los últimos 30 días · 4 competidores</div>
+        </div>
+        <div class="kpi p"><div class="kl">Esta semana</div><div class="kv" id="np-semana">—</div><div class="ks">últimos 7 días</div></div>
+        <div class="kpi g"><div class="kl">Este mes</div><div class="kv" id="np-mes">—</div><div class="ks">últimos 30 días</div></div>
+      </div>
+      <div class="card">
+        <div class="ch">
+          <div><div class="ct">Todos los productos nuevos</div><div class="cs" id="np-sub">Ordenados por fecha de detección</div></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="chip active" onclick="filterNuevos('all',this)">Todos</button>
+            <button class="chip" onclick="filterNuevos('campofrio',this)">Campofrío</button>
+            <button class="chip" onclick="filterNuevos('elpozo',this)">El Pozo</button>
+            <button class="chip" onclick="filterNuevos('noel',this)">Noel</button>
+            <button class="chip" onclick="filterNuevos('argal',this)">Argal</button>
+          </div>
+        </div>
+        <div class="new-prod-grid" id="np-grid">
+          <div class="loading" style="grid-column:1/-1"><div class="spin"></div>Cargando nuevos productos…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALERTAS -->
+    <div class="screen" id="s-alertas">
+      <div class="g4">
+        <div class="kpi r"><div class="kl">Críticas</div><div class="kv" id="al-criticos">—</div><div class="ks">requieren acción inmediata</div></div>
+        <div class="kpi a"><div class="kl">Altas</div><div class="kv" id="al-altas">—</div><div class="ks">revisar hoy</div></div>
+        <div class="kpi b"><div class="kl">Nuevos productos</div><div class="kv" id="al-nuevos">—</div><div class="ks">esta semana</div></div>
+        <div class="kpi" style="border-left:3px solid var(--g300)"><div class="kl">Bajas</div><div class="kv" id="al-bajas">—</div><div class="ks">informativas</div></div>
+      </div>
+      <div class="card">
+        <div class="ch">
+          <div><div class="ct">Todas las alertas</div><div class="cs">Ordenadas por urgencia</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+            <div style="display:flex;gap:6px;align-items:center">
+              <button class="chip active" onclick="setPeriod(1,this)">Hoy</button>
+              <button class="chip" onclick="setPeriod(7,this)">7 días</button>
+              <button class="chip" onclick="setPeriod(30,this)">30 días</button>
+              <button class="chip" onclick="setPeriod(90,this)">3 meses</button>
+              <button class="chip" onclick="setPeriod(365,this)">1 año</button>
+              <button class="chip" onclick="setPeriod(0,this)">Todo</button>
+            </div>
+            <div style="display:flex;gap:8px" id="alertas-tipo-chips">
+              <div class="chip active" onclick="filterAlertas('todas',this)">Todas</div>
+              <div class="chip" onclick="filterAlertas('critica',this)">Crítica</div>
+              <div class="chip" onclick="filterAlertas('alta',this)">Alta</div>
+              <div class="chip" onclick="filterAlertas('nueva',this)">Nueva</div>
+              <div class="chip" onclick="filterAlertas('baja',this)">Baja</div>
+            </div>
+          </div>
+        </div>
+        <div id="alertas-list"><div class="loading"><div class="spin"></div>Cargando alertas…</div></div>
+      </div>
+    </div>
+
+    <!-- PRODUCTOS -->
+    <div class="screen" id="s-productos">
+      <div style="display:flex;gap:16px;min-height:0;flex:1">
+        <!-- SIDEBAR FILTROS -->
+        <div style="width:250px;flex-shrink:0;display:flex;flex-direction:column;gap:10px;overflow-y:auto">
+          <!-- Chips activos -->
+          <div id="active-filters" style="display:flex;flex-wrap:wrap;gap:5px;min-height:4px"></div>
+          <!-- Búsqueda -->
+          <div class="search-wrap"><input type="text" id="prod-search" placeholder="Buscar producto..." oninput="applyFilters()"></div>
+          <!-- Marcas -->
+          <div class="card">
+            <div onclick="toggleAcc('acc-marcas','icon-marcas')" style="padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:12.5px;user-select:none">Marcas <span id="icon-marcas">▼</span></div>
+            <div id="acc-marcas" style="padding:2px 14px 10px"><div id="filter-marcas"></div></div>
+          </div>
+          <!-- Categorías -->
+          <div class="card">
+            <div onclick="toggleAcc('acc-cats','icon-cats')" style="padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:12.5px;user-select:none">Categorías <span id="icon-cats">▼</span></div>
+            <div id="acc-cats" style="padding:2px 14px 10px"><div id="filter-cats"></div></div>
+          </div>
+          <!-- Tipo carne -->
+          <div class="card">
+            <div onclick="toggleAcc('acc-carne','icon-carne')" style="padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:12.5px;user-select:none">Tipo de carne <span id="icon-carne">▼</span></div>
+            <div id="acc-carne" style="padding:2px 14px 10px"><div id="filter-carne"></div></div>
+          </div>
+          <!-- Dieta -->
+          <div class="card">
+            <div onclick="toggleAcc('acc-dieta','icon-dieta')" style="padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:12.5px;user-select:none">Dieta <span id="icon-dieta">▼</span></div>
+            <div id="acc-dieta" style="padding:2px 14px 10px">
+              <label style="display:flex;align-items:center;gap:7px;padding:3px 0;font-size:12px;cursor:pointer"><input type="checkbox" class="filt-dieta" value="sin_gluten" onchange="applyFilters()"> Sin Gluten <span id="cnt-sin_gluten" style="font-size:10px;color:var(--g400);margin-left:auto"></span></label>
+              <label style="display:flex;align-items:center;gap:7px;padding:3px 0;font-size:12px;cursor:pointer"><input type="checkbox" class="filt-dieta" value="sin_lactosa" onchange="applyFilters()"> Sin Lactosa <span id="cnt-sin_lactosa" style="font-size:10px;color:var(--g400);margin-left:auto"></span></label>
+              <label style="display:flex;align-items:center;gap:7px;padding:3px 0;font-size:12px;cursor:pointer"><input type="checkbox" class="filt-dieta" value="sin_colorantes" onchange="applyFilters()"> Sin Colorantes <span id="cnt-sin_colorantes" style="font-size:10px;color:var(--g400);margin-left:auto"></span></label>
+              <label style="display:flex;align-items:center;gap:7px;padding:3px 0;font-size:12px;cursor:pointer"><input type="checkbox" class="filt-dieta" value="sin_conservantes" onchange="applyFilters()"> Sin Conservantes <span id="cnt-sin_conservantes" style="font-size:10px;color:var(--g400);margin-left:auto"></span></label>
+            </div>
+          </div>
+          <button class="btn btn-ghost" onclick="clearAllFilters()" style="width:100%;font-size:11.5px">✕ Limpiar filtros</button>
+        </div>
+        <!-- TABLA PRODUCTOS -->
+        <div style="flex:1;display:flex;flex-direction:column;gap:10px;min-width:0">
+          <div style="display:flex;gap:8px;align-items:center">
+            <select id="prod-sort" onchange="applyFilters()" style="font-size:12px;border:1.5px solid var(--g200);border-radius:6px;padding:6px 10px;background:#fff;font-family:'Montserrat',sans-serif;outline:none">
+              <option value="relevancia">Ordenar: Relevancia</option>
+              <option value="pct_carne_desc">% Carne ↓</option>
+              <option value="sal_asc">Sal ↑ (menor)</option>
+              <option value="nombre_asc">Nombre A-Z</option>
+              <option value="reciente">Más reciente</option>
+            </select>
+            <span id="prod-count" style="font-size:12px;color:var(--g400);margin-left:auto">— productos</span>
+          </div>
+          <div class="card" style="overflow:auto;flex:1">
+            <table>
+              <thead><tr><th>Marca</th><th>Producto</th><th>Categoría</th><th>% Carne</th><th>Kcal</th><th>Sal</th><th>Actualizado</th><th>Estado</th><th></th></tr></thead>
+              <tbody id="prod-tbody"><tr><td colspan="9"><div class="loading"><div class="spin"></div>Cargando…</div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPARATIVA -->
+    <div class="screen" id="s-comparativa">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span style="font-size:12.5px;color:var(--g600);font-weight:600">Categoría:</span>
+        <select id="comp-select" style="font-size:13px;border:1.5px solid var(--g200);border-radius:6px;padding:6px 12px;color:var(--navy);background:#fff;font-family:'Montserrat',sans-serif;outline:none;font-weight:600" onchange="loadComparativa()">
+          <option value="">— Todas —</option>
+          <option value="jamon_cocido">Jamón cocido</option>
+          <option value="pavo_pollo">Pavo y pollo</option>
+          <option value="jamon_curado">Jamón y Lomo Curado</option>
+          <option value="iberico">Ibéricos</option>
+          <option value="chorizo">Chorizo y salchichón</option>
+          <option value="fuet">Fuet y longaniza</option>
+          <option value="mortadela">Mortadela y chopped</option>
+          <option value="salchichas">Salchichas</option>
+          <option value="cocidos">Cocidos (fiambres/bacon)</option>
+          <option value="pates">Patés</option>
+          <option value="snacks">Snacks</option>
+          <option value="platos">Platos preparados</option>
+        </select>
+        <span style="font-size:12.5px;color:var(--g600);font-weight:600">Marca:</span>
+        <select id="comp-marca-select" style="font-size:13px;border:1.5px solid var(--g200);border-radius:6px;padding:6px 12px;color:var(--navy);background:#fff;font-family:'Montserrat',sans-serif;outline:none" onchange="loadComparativa()">
+          <option value="">Todas las marcas</option>
+          <option value="campofrio">Campofrío</option>
+          <option value="elpozo">El Pozo</option>
+          <option value="noel">Noel</option>
+          <option value="argal">Argal</option>
+        </select>
+        <span style="font-size:11.5px;color:var(--g400);margin-left:auto" id="comp-count">Cargando…</span>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct">Tabla comparativa completa</div><div class="cs">Ordenada por % carne DESC</div></div>
+        <table><thead><tr><th>Marca</th><th>Producto</th><th>% Carne</th><th>Kcal</th><th>Proteínas</th><th>Grasas</th><th>G.Saturadas</th><th>Carboh.</th><th>Sal</th></tr></thead>
+        <tbody id="comp-tbody"><tr><td colspan="9"><div class="loading"><div class="spin"></div>Cargando…</div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HISTORIAL -->
+    <div class="screen" id="s-historial">
+      <div class="g2">
+        <div class="card">
+          <div class="ch">
+            <div><div class="ct">Historial completo de cambios</div><div class="cs">Registro inmutable de todas las modificaciones detectadas</div></div>
+            <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+              <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                <button class="chip active" onclick="setPeriod(1,this)">Hoy</button>
+                <button class="chip" onclick="setPeriod(7,this)">7 días</button>
+                <button class="chip" onclick="setPeriod(30,this)">30 días</button>
+                <button class="chip" onclick="setPeriod(90,this)">3 meses</button>
+                <button class="chip" onclick="setPeriod(365,this)">1 año</button>
+                <button class="chip" onclick="setPeriod(0,this)">Todo</button>
+              </div>
+              <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                <select id="hist-marca-filter" style="font-size:12px;border:1.5px solid var(--g200);border-radius:6px;padding:5px 10px;color:var(--navy);background:#fff;font-family:'Montserrat',sans-serif;outline:none" onchange="renderHistorialData(allHistorial)">
+                  <option value="">Todas las marcas</option>
+                  <option value="campofrio">Campofrío</option>
+                  <option value="elpozo">El Pozo</option>
+                  <option value="noel">Noel</option>
+                  <option value="argal">Argal</option>
+                </select>
+                <select id="hist-tipo-filter" style="font-size:12px;border:1.5px solid var(--g200);border-radius:6px;padding:5px 10px;color:var(--navy);background:#fff;font-family:'Montserrat',sans-serif;outline:none" onchange="renderHistorialData(allHistorial)">
+                  <option value="">Todos los tipos</option>
+                  <option value="claim">Claims</option>
+                  <option value="ingrediente">Ingredientes</option>
+                  <option value="nutri">Nutricional</option>
+                  <option value="nuevo_producto">Nuevo producto</option>
+                </select>
+                <div class="search-wrap" style="width:160px"><input type="text" id="hist-prod-search" placeholder="Buscar producto…" oninput="renderHistorialData(allHistorial)" style="width:100%;padding:5px 10px 5px 30px;font-size:12px"></div>
+                <select id="hist-sort" style="font-size:12px;border:1.5px solid var(--g200);border-radius:6px;padding:5px 10px;color:var(--navy);background:#fff;font-family:'Montserrat',sans-serif;outline:none" onchange="renderHistorialData(allHistorial)">
+                  <option value="recientes">Más recientes</option>
+                  <option value="relevantes">Más relevantes</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div id="hist-list"><div class="loading"><div class="spin"></div>Cargando historial…</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="ch"><div class="ct">Resumen del mes</div></div>
+            <div style="padding:14px 18px;display:flex;flex-direction:column;gap:10px" id="hist-resumen">
+              <div class="loading"><div class="spin"></div>Cargando…</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><div class="ct">Exportar historial</div></div>
+            <div style="padding:14px 18px;display:flex;flex-direction:column;gap:8px">
+              <button class="btn btn-pri" style="width:100%" onclick="exportarExcel()">📥 Descargar Excel (.csv)</button>
+              <button class="btn btn-sec" style="width:100%" onclick="exportarPDF()">📄 Exportar PDF</button>
+              <button class="btn btn-ghost" style="width:100%" onclick="enviarEmail()">📧 Enviar por email</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLAIMS -->
+    <div class="screen" id="s-claims">
+      <div class="g4">
+        <div class="kpi b"><div class="kl">Claims únicos detectados</div><div class="kv">34</div><div class="ks">en 4 marcas</div></div>
+        <div class="kpi g"><div class="kl">Claims compartidos</div><div class="kv">12</div><div class="ks">presentes en ≥3 marcas</div></div>
+        <div class="kpi a"><div class="kl">Exclusivos de 1 marca</div><div class="kv">9</div><div class="ks">diferenciadores</div></div>
+        <div class="kpi r"><div class="kl">Claims modificados</div><div class="kv">3</div><div class="ks">este mes</div></div>
+      </div>
+      <div class="card">
+        <div class="ch">
+          <div><div class="ct">Mapa de claims por categoría</div><div class="cs" id="claims-cs">Cargando…</div></div>
+          <select id="claims-cat-select" style="font-size:12px;border:1.5px solid var(--g200);border-radius:6px;padding:5px 10px;color:var(--navy);background:#fff;font-family:'Montserrat',sans-serif;outline:none" onchange="loadClaimsMap(this.value)">
+            <option value="jamon cocido">Jamón cocido</option>
+            <option value="pavo y pollo">Pavo y pollo</option>
+            <option value="embutido">Embutidos</option>
+            <option value="chorizo">Chorizo y salchichón</option>
+            <option value="fuet">Fuet y longaniza</option>
+            <option value="mortadela">Mortadela y chopped</option>
+            <option value="salchicha">Salchichas</option>
+            <option value="iberic">Ibéricos</option>
+            <option value="jamon y lomo">Jamón y Lomo Curado</option>
+            <option value="pate">Patés</option>
+            <option value="snack">Snacks</option>
+            <option value="platos preparados">Platos preparados</option>
+            <option value="carne fresca">Carne Fresca</option>
+            <option value="cocidos">Cocidos</option>
+            <option value="pizza">Pizzas</option>
+            <option value="vegetariano">Vegetariano</option>
+          </select>
+        </div>
+        <div id="claims-grid" style="padding:0 18px 14px">
+          <div class="loading"><div class="spin"></div>Cargando mapa de claims…</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct">Claims exclusivos por marca</div><div class="cs">Solo presentes en 1 marca — oportunidades de diferenciación</div></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0">
+          <div style="padding:14px 18px;border-right:1px solid var(--g100)">
+            <div class="ab cf" style="margin-bottom:8px">Campofrío</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span class="ctag">Receta tradicional</span>
+              <span class="ctag">Calidad garantizada</span>
+            </div>
+          </div>
+          <div style="padding:14px 18px;border-right:1px solid var(--g100)">
+            <div class="ab ep" style="margin-bottom:8px">El Pozo</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span class="ctag">Reducido en sal</span>
+              <span class="ctag">Sin conservantes</span>
+            </div>
+          </div>
+          <div style="padding:14px 18px;border-right:1px solid var(--g100)">
+            <div class="ab no" style="margin-bottom:8px">Noel</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span class="ctag">Bienestar animal</span>
+              <span class="ctag">Compromiso sostenible</span>
+            </div>
+          </div>
+          <div style="padding:14px 18px">
+            <div class="ab ar" style="margin-bottom:8px">Argal</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span class="ctag">Sin nitritos añadidos</span>
+              <span class="ctag">Elaboración artesana</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NUTRICIONAL -->
+    <div class="screen" id="s-nutri">
+      <div class="g4">
+        <div class="kpi b"><div class="kl">Productos con cambio nutric.</div><div class="kv" id="nt-kpi1">—</div><div class="ks">último mes</div></div>
+        <div class="kpi r"><div class="kl">Mayor subida kcal</div><div class="kv" id="nt-kpi2">—</div><div class="ks" id="nt-kpi2s">calculando…</div></div>
+        <div class="kpi g"><div class="kl">Mayor bajada sal</div><div class="kv" id="nt-kpi3">—</div><div class="ks" id="nt-kpi3s">calculando…</div></div>
+        <div class="kpi a"><div class="kl">Media % carne sector</div><div class="kv" id="nt-kpi4">—</div><div class="ks">jamón cocido</div></div>
+      </div>
+      <div class="card">
+        <div class="ch">
+          <div><div class="ct">Comparativa nutricional completa</div><div class="cs">Todas las categorías · por 100g</div></div>
+          <select id="nutri-marca-filter" style="font-size:12px;border:1.5px solid var(--g200);border-radius:6px;padding:5px 10px;color:var(--navy);background:#fff;font-family:'Montserrat',sans-serif;outline:none" onchange="stabNutri(document.querySelector('#s-nutri .tc.active')?.id||'nt-cocidos',null,null)">
+            <option value="">Todas las marcas</option>
+            <option value="campofrio">Campofrío</option>
+            <option value="elpozo">El Pozo</option>
+            <option value="noel">Noel</option>
+            <option value="argal">Argal</option>
+          </select>
+        </div>
+        <div class="tabs">
+          <div class="tab active" onclick="stabNutri('nt-cocidos',this,'cocido')">Cocidos</div>
+          <div class="tab" onclick="stabNutri('nt-curados',this,'curado')">Curados</div>
+          <div class="tab" onclick="stabNutri('nt-embutidos',this,'embutido')">Embutidos</div>
+          <div class="tab" onclick="stabNutri('nt-ave',this,'pavo')">Fiambres de ave</div>
+          <div class="tab" onclick="stabNutri('nt-platos',this,'plato')">Platos</div>
+          <div class="tab" onclick="stabNutri('nt-iberico',this,'iberic')">Ibéricos</div>
+        </div>
+        <div class="tc active" id="nt-cocidos"><div class="loading"><div class="spin"></div>Cargando datos nutricionales…</div></div>
+        <div class="tc" id="nt-curados"><div class="loading"><div class="spin"></div>Cargando…</div></div>
+        <div class="tc" id="nt-embutidos"><div class="loading"><div class="spin"></div>Cargando…</div></div>
+        <div class="tc" id="nt-ave"><div class="loading"><div class="spin"></div>Cargando…</div></div>
+        <div class="tc" id="nt-platos"><div class="loading"><div class="spin"></div>Cargando…</div></div>
+        <div class="tc" id="nt-iberico"><div class="loading"><div class="spin"></div>Cargando…</div></div>
+      </div>
+    </div>
+
+    <!-- MARCA -->
+    <div class="screen" id="s-marca">
+      <div class="g4" id="marcaKpis"></div>
+      <div class="g2">
+        <div class="card">
+          <div class="ch"><div class="ct" id="marcaTitle">Productos</div><div class="cs" id="marcaSub"></div></div>
+          <div id="marcaProds"><div class="loading"><div class="spin"></div>Cargando…</div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">Últimos cambios</div></div>
+          <div id="marcaHistory"><div class="loading"><div class="spin"></div>Cargando…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIG -->
+    <div class="screen" id="s-config">
+      <div class="g2">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="ch"><div class="ct">Frecuencia de monitorización</div><div class="cs">Cada cuánto se revisan las webs</div></div>
+            <div class="setting-row"><div><div style="font-size:13px;font-weight:500;color:var(--g900)">Ciclo de actualización</div><div style="font-size:12px;color:var(--g400);margin-top:2px">Intervalo entre revisiones de cada web</div></div>
+              <select style="font-size:12px;border:1.5px solid var(--g200);border-radius:6px;padding:6px 10px;color:var(--navy);background:#fff;font-family:'Montserrat',sans-serif;outline:none">
+                <option>Cada 6 horas</option><option>Cada 8 horas</option><option>Cada 12 horas</option><option>Cada 24 horas</option>
+              </select>
+            </div>
+            <div class="setting-row"><div><div style="font-size:13px;font-weight:500">Próxima ejecución</div><div style="font-size:12px;color:var(--g400);margin-top:2px">Hoy a las 14:45</div></div><div style="font-size:12px;color:var(--green);font-weight:700">● Activo</div></div>
+          </div>
+          <div class="card">
+            <div class="ch"><div class="ct">Competidores monitorizados</div></div>
+            <div class="setting-row"><div><div class="ab cf" style="font-size:12px">Campofrío</div><div style="font-size:11.5px;color:var(--g400);margin-top:2px">campofrio.es · 68 productos</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row"><div><div class="ab ep" style="font-size:12px">El Pozo</div><div style="font-size:11.5px;color:var(--g400);margin-top:2px">elpozo.com · 74 productos</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row"><div><div class="ab no" style="font-size:12px">Noel</div><div style="font-size:11.5px;color:var(--g400);margin-top:2px">noel.es · 58 productos</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row"><div><div class="ab ar" style="font-size:12px">Argal</div><div style="font-size:11.5px;color:var(--g400);margin-top:2px">argal.es · 48 productos</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row" style="border-bottom:none"><div style="font-size:12px;color:var(--tello);cursor:pointer;font-weight:700" onclick="showAddCompetidor()">+ Añadir competidor</div></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="ch"><div class="ct">Alertas y notificaciones</div></div>
+            <div class="setting-row"><div><div style="font-size:13px;font-weight:500">Email inmediato (Crítica)</div><div style="font-size:12px;color:var(--g400);margin-top:2px">Cambios en ingredientes o alérgenos</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row"><div><div style="font-size:13px;font-weight:500">Email inmediato (Alta)</div><div style="font-size:12px;color:var(--g400);margin-top:2px">Cambios en valores nutricionales</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row"><div><div style="font-size:13px;font-weight:500">Resumen diario</div><div style="font-size:12px;color:var(--g400);margin-top:2px">Nuevos productos y cambios medios</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row"><div><div style="font-size:13px;font-weight:500">Informe semanal</div><div style="font-size:12px;color:var(--g400);margin-top:2px">Resumen completo de la semana</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="setting-row" style="border-bottom:none"><div><div style="font-size:13px;font-weight:500">Email de destino</div><div style="font-size:11px;color:var(--g400);margin-top:2px">Cambia en config.py o variable EMAIL_TO</div></div>
+              <input type="email" value="marketing1@tello.es" style="font-size:12px;border:1.5px solid var(--g200);border-radius:6px;padding:6px 10px;color:var(--navy);font-family:'Montserrat',sans-serif;outline:none;width:220px">
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><div class="ct">Estado del sistema</div></div>
+            <div class="setting-row"><div style="font-size:13px;font-weight:500">Scraper Campofrío</div><div style="color:var(--green);font-size:12px;font-weight:700">● Operativo</div></div>
+            <div class="setting-row"><div style="font-size:13px;font-weight:500">Scraper El Pozo</div><div style="color:var(--green);font-size:12px;font-weight:700">● Operativo</div></div>
+            <div class="setting-row"><div style="font-size:13px;font-weight:500">Scraper Noel</div><div style="color:var(--green);font-size:12px;font-weight:700">● Operativo</div></div>
+            <div class="setting-row"><div style="font-size:13px;font-weight:500">Scraper Argal</div><div style="color:var(--amber);font-size:12px;font-weight:700">⚠ Lento</div></div>
+            <div class="setting-row"><div style="font-size:13px;font-weight:500">Base de datos</div><div style="color:var(--green);font-size:12px;font-weight:700">● Supabase conectado</div></div>
+            <div class="setting-row" style="border-bottom:none"><div style="font-size:13px;font-weight:500">API Claude (IA)</div><div style="color:var(--green);font-size:12px;font-weight:700">● Activa</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- MODAL AÑADIR COMPETIDOR -->
+<div id="modal-competidor" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:12px;width:480px;max-width:95vw;box-shadow:0 16px 48px rgba(0,0,0,.18);overflow:hidden">
+    <div style="background:linear-gradient(135deg,#1A1A1A,var(--tello));padding:20px 24px;color:#fff">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:.02em">Añadir nuevo competidor</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.55);margin-top:4px">Requiere desarrollo de un scraper a medida</div>
+    </div>
+    <div style="padding:20px 24px;font-size:13px;color:var(--g600);line-height:1.6">
+      <p style="margin-bottom:12px">Añadir un competidor implica crear un <strong>scraper específico</strong> para su web. Cada web tiene una estructura HTML diferente que hay que analizar e implementar manualmente.</p>
+      <div style="background:var(--g50);border-radius:8px;padding:14px 16px;margin-bottom:14px;border-left:3px solid var(--tello)">
+        <div style="font-weight:700;font-size:12px;color:var(--navy);margin-bottom:8px">Para añadir un competidor, necesitas:</div>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:12px">
+          <div>① Crear <code style="background:var(--g200);padding:1px 5px;border-radius:3px">scrapers/nuevo_scraper.py</code> con la clase del scraper</div>
+          <div>② Registrarlo en <code style="background:var(--g200);padding:1px 5px;border-radius:3px">scrapers/__init__.py</code> y <code style="background:var(--g200);padding:1px 5px;border-radius:3px">config.py</code></div>
+          <div>③ Añadir los colores y la etiqueta en el dashboard</div>
+          <div>④ Configurar el scraping en GitHub Actions</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--g400)">¿Qué competidor quieres añadir? Compártelo con el equipo de desarrollo con la URL de su catálogo de productos.</p>
+    </div>
+    <div style="padding:0 24px 20px;display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="document.getElementById('modal-competidor').style.display='none'">Cerrar</button>
+      <button class="btn btn-pri" onclick="window.location.href='mailto:marketing1@tello.es?subject=Nuevo competidor a monitorizar&body=Competidor: %0AURL catálogo: '">Solicitar por email</button>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY + DETAIL PANEL -->
+<div class="overlay" id="overlay" onclick="closeDetail()"></div>
+<div class="dp" id="dp">
+  <div class="dh">
+    <div><div id="dpBrand" class="ab" style="font-size:11px;margin-bottom:4px"></div><div id="dpName" style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:var(--navy);letter-spacing:.01em"></div><div id="dpCat" style="font-size:12px;color:var(--g400);margin-top:2px"></div></div>
+    <button class="dc" onclick="closeDetail()">✕</button>
+  </div>
+  <div class="db" id="dpBody"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ── SUPABASE INIT ──
+const SUPA_URL = 'https://ujassvznjpnfwtmpznsy.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqYXNzdnpuanBuZnd0bXB6bnN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzODI5NTcsImV4cCI6MjA5NTk1ODk1N30.ngX8OalhSl89apMhKfnV7FheHWRZIJc4FEYwhUcQYWE';
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+// ── BASELINE DATE ──
+// Cambios ANTES de esta fecha son de calibración/setup y se ignoran.
+// Actualizar a la fecha de go-live real (formato ISO YYYY-MM-DD).
+const BASELINE_DATE = '2026-06-12T00:00:00';
+
+// ── BRANDS CONFIG ──
+const brands = {
+  campofrio:{ cls:'cf', label:'Campofrío', color:'#991B1B' },
+  elpozo:   { cls:'ep', label:'El Pozo',   color:'#0369A1' },
+  noel:     { cls:'no', label:'Noel',      color:'#9333EA' },
+  argal:    { cls:'ar', label:'Argal',     color:'#047857' }
+};
+
+// ── STATE ──
+let allProductos = [];
+let allHistorial = [];
+let allAlertas = [];
+let currentBrand = null;
+let currentPeriodDays = 30;
+let activeFilters = { marcas:[], cats:[], carne:[], dieta:[] };
+
+// ── FILTER SIDEBAR ──
+function toggleAcc(id, iconId) {
+  const el = document.getElementById(id);
+  const icon = document.getElementById(iconId);
+  if(!el) return;
+  const hidden = el.style.display === 'none';
+  el.style.display = hidden ? 'block' : 'none';
+  if(icon) icon.textContent = hidden ? '▼' : '►';
+}
+
+function buildFilterCheckboxes() {
+  const brandLabels = {campofrio:'Campofrío', elpozo:'El Pozo', noel:'Noel', argal:'Argal'};
+  // Marcas
+  const marcaCounts = {};
+  allProductos.forEach(p => { const m=p.competidor||''; marcaCounts[m]=(marcaCounts[m]||0)+1; });
+  document.getElementById('filter-marcas').innerHTML = Object.entries(marcaCounts).sort((a,b)=>b[1]-a[1])
+    .map(([m,c])=>`<label style="display:flex;align-items:center;gap:7px;padding:3px 0;font-size:12px;cursor:pointer"><input type="checkbox" class="filt-marca" value="${m}" onchange="applyFilters()"> ${brandLabels[m]||m} <span style="font-size:10px;color:var(--g400);margin-left:auto">(${c})</span></label>`).join('');
+  // Categorías
+  const catCounts = {};
+  allProductos.forEach(p => { const c=p.categoria||'Sin categoría'; catCounts[c]=(catCounts[c]||0)+1; });
+  const sortedCats = Object.entries(catCounts).sort((a,b)=>b[1]-a[1]);
+  const top6 = sortedCats.slice(0,6), rest = sortedCats.slice(6);
+  let html = top6.map(([c,n])=>`<label style="display:flex;align-items:center;gap:7px;padding:3px 0;font-size:12px;cursor:pointer"><input type="checkbox" class="filt-cat" value="${c}" onchange="applyFilters()"> ${c} <span style="font-size:10px;color:var(--g400);margin-left:auto">(${n})</span></label>`).join('');
+  if(rest.length){ html+=`<div id="cats-more" style="display:none">${rest.map(([c,n])=>`<label style="display:flex;align-items:center;gap:7px;padding:3px 0;font-size:12px;cursor:pointer"><input type="checkbox" class="filt-cat" value="${c}" onchange="applyFilters()"> ${c} <span style="font-size:10px;color:var(--g400);margin-left:auto">(${n})</span></label>`).join('')}</div><a style="font-size:11px;color:var(--tello);cursor:pointer;font-weight:600" onclick="document.getElementById('cats-more').style.display='block';this.style.display='none'">Ver más (${rest.length})</a>`; }
+  document.getElementById('filter-cats').innerHTML = html;
+  // Tipo carne
+  const carneCounts = {};
+  allProductos.forEach(p => { if(p.tipo_carne){ carneCounts[p.tipo_carne]=(carneCounts[p.tipo_carne]||0)+1; } });
+  document.getElementById('filter-carne').innerHTML = Object.entries(carneCounts).sort((a,b)=>b[1]-a[1])
+    .map(([c,n])=>`<label style="display:flex;align-items:center;gap:7px;padding:3px 0;font-size:12px;cursor:pointer"><input type="checkbox" class="filt-carne" value="${c}" onchange="applyFilters()"> ${c} <span style="font-size:10px;color:var(--g400);margin-left:auto">(${n})</span></label>`).join('');
+  // Dieta counts
+  ['sin_gluten','sin_lactosa','sin_colorantes','sin_conservantes'].forEach(k => {
+    const cnt = allProductos.filter(p=>p[k]===true).length;
+    const el = document.getElementById('cnt-'+k);
+    if(el) el.textContent = `(${cnt})`;
+  });
+}
+
+function applyFilters() {
+  activeFilters.marcas  = [...document.querySelectorAll('.filt-marca:checked')].map(i=>i.value);
+  activeFilters.cats    = [...document.querySelectorAll('.filt-cat:checked')].map(i=>i.value);
+  activeFilters.carne   = [...document.querySelectorAll('.filt-carne:checked')].map(i=>i.value);
+  activeFilters.dieta   = [...document.querySelectorAll('.filt-dieta:checked')].map(i=>i.value);
+  const q = (document.getElementById('prod-search')?.value||'').toLowerCase();
+  const sort = document.getElementById('prod-sort')?.value||'relevancia';
+  let data = allProductos.filter(p => {
+    if(q && !(p.nombre_producto||'').toLowerCase().includes(q)) return false;
+    if(activeFilters.marcas.length && !activeFilters.marcas.includes(p.competidor||'')) return false;
+    if(activeFilters.cats.length){
+      // Normaliza texto: minúsculas + sin tildes
+      function normTxt(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
+      const pcat = normTxt(p.categoria);
+      const pnom = normTxt(p.nombre_producto);
+      const psubcat = normTxt(p.subcategoria);
+
+      // Mapeo de categoría → palabras clave en nombre del producto
+      const CAT_KEYWORDS = {
+        'jamon cocido':          ['jamon cocido','paleta cocida','fiambre de jamon','fiambre york','jamon extra','jamon reserva'],
+        'pavo y pollo':          ['pechuga de pavo','pechuga de pollo','fiambre de pavo','fiambre de pollo','jamon de pavo','pechuguita','pollo asado','canal de pavo','canal de pollo'],
+        'jamon y lomo curado':   ['jamon serrano','lomo curado','lomo embuchado','jamon estirpe','jamon gran estirpe','paleta curada'],
+        'ibéricos':              ['iberico','cebo de campo','bellota','50% raza','100% iberica'],
+        'ibéricos':              ['iberico','cebo de campo','bellota'],
+        'chorizo y salchichon':  ['chorizo','salchichon'],
+        'fuet y longaniza':      ['fuet','longaniza','espetec','chistorra'],
+        'mortadela y chopped':   ['mortadela','chopped'],
+        'salchichas':            ['frankfurt','salchicha','hot dog','bratwurst','bockwurst','viena','king upp'],
+        'pates':                 ['pate','sobrasada'],
+        'snacks':                ['snack','bocadito','tapas fuet','tapas chorizo','mini fuet','mini chorizo','fuet & bread'],
+        'platos preparados':     ['tortilla','ensalada','gazpacho','salmorejo','paella','macarrones','lasana','risotto','arroz','espagueti','fideuá','fideuà','hummus','yakisoba','caldo','pasta box','croquetas','nuggets'],
+        'cocidos':               ['bacon','panceta','fiambre','paleta','codillo','burger','hamburguesa','albondigas','picada'],
+      };
+
+      const match = activeFilters.cats.some(cat => {
+        const cl = normTxt(cat);
+        if(pcat === cl || pcat.includes(cl)) return true;
+        if(psubcat.includes(cl)) return true;
+        // Buscar por palabras clave del nombre
+        const keywords = CAT_KEYWORDS[cl] || [cl];
+        return keywords.some(kw => pnom.includes(normTxt(kw)));
+      });
+      if(!match) return false;
+    }
+    if(activeFilters.carne.length && !activeFilters.carne.includes(p.tipo_carne||'')) return false;
+    if(activeFilters.dieta.length && !activeFilters.dieta.every(d=>p[d]===true)) return false;
+    return true;
+  });
+  if(sort==='pct_carne_desc') data.sort((a,b)=>(b.porcentaje_carne||0)-(a.porcentaje_carne||0));
+  else if(sort==='sal_asc') data.sort((a,b)=>(a.sal_g||999)-(b.sal_g||999));
+  else if(sort==='nombre_asc') data.sort((a,b)=>(a.nombre_producto||'').localeCompare(b.nombre_producto||''));
+  else if(sort==='reciente') data.sort((a,b)=>new Date(b.fecha_ultima_actualizacion||0)-new Date(a.fecha_ultima_actualizacion||0));
+  else data.sort((a,b)=>((b._hasChange?1:0)-(a._hasChange?1:0))||(b.porcentaje_carne||0)-(a.porcentaje_carne||0));
+  renderProductos(data);
+  renderActiveChips();
+}
+
+function renderActiveChips() {
+  const brandLabels = {campofrio:'Campofrío', elpozo:'El Pozo', noel:'Noel', argal:'Argal'};
+  const all = [
+    ...activeFilters.marcas.map(v=>({g:'marca',v,l:brandLabels[v]||v})),
+    ...activeFilters.cats.map(v=>({g:'cat',v,l:v})),
+    ...activeFilters.carne.map(v=>({g:'carne',v,l:v})),
+    ...activeFilters.dieta.map(v=>({g:'dieta',v,l:v.replace(/_/g,' ').replace(/^sin /,'Sin ')})),
+  ];
+  const el = document.getElementById('active-filters');
+  if(el) el.innerHTML = all.map(f=>`<span class="active-chip">${f.l} <button onclick="removeFilter('${f.g}','${f.v}')">×</button></span>`).join('');
+}
+
+function removeFilter(group, value) {
+  const sel = group==='marca'?'.filt-marca':group==='cat'?'.filt-cat':group==='carne'?'.filt-carne':'.filt-dieta';
+  document.querySelectorAll(`${sel}[value="${value}"]`).forEach(i=>i.checked=false);
+  applyFilters();
+}
+
+function clearAllFilters() {
+  document.querySelectorAll('.filt-marca,.filt-cat,.filt-carne,.filt-dieta').forEach(i=>i.checked=false);
+  const s=document.getElementById('prod-search'); if(s) s.value='';
+  applyFilters();
+}
+
+// Legacy alias
+function filterProductos(){ applyFilters(); }
+
+// ── HELPERS ──
+function fmtDate(iso){
+  if(!iso) return '—';
+  const d = new Date(iso);
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const hh = String(d.getHours()).padStart(2,'0');
+  const min = String(d.getMinutes()).padStart(2,'0');
+  return `${dd}/${mm} · ${hh}:${min}`;
+}
+
+function fmtDateLong(iso){
+  if(!iso) return '—';
+  const d = new Date(iso);
+  const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function fmtDateGroup(iso){
+  if(!iso) return '—';
+  const d = new Date(iso);
+  const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function timeAgo(iso){
+  if(!iso) return '—';
+  const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+  if(diff < 60) return `Hace ${Math.round(diff)} seg`;
+  if(diff < 3600) return `Hace ${Math.round(diff/60)} min`;
+  if(diff < 86400) return `Hace ${Math.round(diff/3600)} h`;
+  return `Hace ${Math.round(diff/86400)} días`;
+}
+
+function severidadCls(sev){
+  if(!sev) return 'baja';
+  const s = sev.toLowerCase();
+  if(s==='critico'||s==='crítico') return 'crit';
+  if(s==='alto'||s==='alta') return 'alta';
+  if(s==='medio'||s==='media'||s==='nuevo_producto') return 'new';
+  return 'baja';
+}
+
+function severidadLabel(sev){
+  if(!sev) return 'Baja';
+  const s = sev.toLowerCase();
+  if(s==='critico'||s==='crítico') return 'Crítica';
+  if(s==='alto'||s==='alta') return 'Alta';
+  if(s==='medio'||s==='media') return 'Medio';
+  if(s==='nuevo_producto') return 'Nuevo';
+  return 'Baja';
+}
+
+function brandCls(comp){
+  if(!comp) return '';
+  const c = comp.toLowerCase().replace(/\s/g,'').replace(/ó/g,'o').replace(/í/g,'i');
+  if(c.includes('campofrio')||c.includes('campofrío')) return 'cf';
+  if(c.includes('elpozo')||c.includes('pozo')) return 'ep';
+  if(c.includes('noel')) return 'no';
+  if(c.includes('argal')) return 'ar';
+  return '';
+}
+
+function histTagStyle(tipo){
+  if(!tipo) return {bg:'var(--g100)',col:'var(--g600)',label:'Cambio'};
+  const t = tipo.toLowerCase();
+  if(t.includes('ingrediente')) return {bg:'var(--redl)',col:'var(--red)',label:'Ingredientes'};
+  if(t.includes('nutri')) return {bg:'var(--amberl)',col:'var(--amber)',label:'Nutricional'};
+  if(t.includes('claim')) return {bg:'var(--amberl)',col:'var(--amber)',label:'Claims'};
+  if(t.includes('nuevo')) return {bg:'var(--ice2)',col:'var(--tello)',label:'Nuevo producto'};
+  return {bg:'var(--g100)',col:'var(--g600)',label:tipo};
+}
+
+function histDotColor(sev){
+  const s = (sev||'').toLowerCase();
+  if(s==='critico'||s==='crítico') return 'var(--red)';
+  if(s==='alto'||s==='alta') return 'var(--amber)';
+  if(s==='nuevo_producto'||s==='medio') return 'var(--tello)';
+  return 'var(--g300)';
+}
+
+function periodIsoDate(days){
+  if(!days) return null;
+  return new Date(Date.now() - days*24*3600*1000).toISOString();
+}
+
+// ── CHART (static) ──
+function buildChart(){
+  const months=['Dic','Ene','Feb','Mar','Abr','May'];
+  const cdata={campofrio:[2,3,1,4,2,5],elpozo:[1,2,3,2,3,4],noel:[0,1,2,1,2,2],argal:[1,0,1,2,1,3]};
+  const ccolors={campofrio:'#991B1B',elpozo:'#0369A1',noel:'#9333EA',argal:'#047857'};
+  const maxV=14;
+  const ce=document.getElementById('dashChart'),le=document.getElementById('dashLabels');
+  if(!ce||!le) return;
+  ce.innerHTML=''; le.innerHTML='';
+  months.forEach((m,i)=>{
+    const g=document.createElement('div'); g.className='cgroup';
+    Object.keys(cdata).forEach(b=>{
+      const bar=document.createElement('div');
+      bar.className='cbar'; bar.style.height=(cdata[b][i]/maxV*100)+'%'; bar.style.background=ccolors[b];
+      bar.title=b+': '+cdata[b][i]; g.appendChild(bar);
+    });
+    ce.appendChild(g);
+    const l=document.createElement('div'); l.className='clabel'; l.textContent=m; le.appendChild(l);
+  });
+}
+
+// ── TIME PERIOD FILTER ──
+function setPeriod(days, el){
+  currentPeriodDays = days;
+  // Deactivate all period chips in same container
+  el.closest('div').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  // Reload alertas and historial
+  loadAlertasScreen();
+  loadHistorial();
+}
+
+// ── NAVIGATION ──
+function nav(screen, el, brand){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const s = document.getElementById('s-'+screen);
+  if(s) s.classList.add('active');
+  if(el && typeof el !== 'string'){
+    document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+    el.classList.add('active');
+  }
+  const titles = {dashboard:'Dashboard',alertas:'Alertas',productos:'Productos',comparativa:'Comparativa nutricional',historial:'Historial de cambios',claims:'Mapa de claims',nutri:'Análisis nutricional',nuevos:'Nuevos productos',config:'Configuración',marca:''};
+  document.getElementById('pgTitle').textContent = titles[screen]||screen;
+  if(screen==='marca' && brand){
+    currentBrand = brand;
+    renderMarca(brand);
+    document.getElementById('pgTitle').textContent = brands[brand]?.label || brand;
+  }
+  if(screen==='alertas') loadAlertasScreen();
+  if(screen==='historial') loadHistorial();
+  if(screen==='nutri') loadNutriKpis();
+  if(screen==='comparativa') loadComparativa();
+  if(screen==='claims') loadClaimsMap(document.getElementById('claims-cat-select').value);
+  if(screen==='nuevos') loadNuevosProductos();
+}
+
+// ── TABS ──
+function stab(group,activeId,el){
+  const parent=document.getElementById(activeId).closest('.card');
+  parent.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  parent.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+  document.getElementById(activeId).classList.add('active');
+}
+
+// ── NUTRI TABS ──
+const nutriFilters = {
+  'nt-cocidos': "categoria.ilike.%cocido%,categoria.ilike.%Cocidos%,categoria.ilike.%jamon cocido%",
+  'nt-curados': "categoria.ilike.%curado%,categoria.ilike.%serrano%,categoria.ilike.%jamon y lomo%",
+  'nt-embutidos': "categoria.ilike.%embutido%,categoria.ilike.%chorizo%,categoria.ilike.%fuet%,categoria.ilike.%salchich%,categoria.ilike.%mortadel%",
+  'nt-ave': "categoria.ilike.%pavo%,categoria.ilike.%pollo%,categoria.ilike.%ave%",
+  'nt-platos': "categoria.ilike.%plato%,categoria.ilike.%preparado%",
+  'nt-iberico': "categoria.ilike.%ibéric%,categoria.ilike.%iberic%"
+};
+
+function stabNutri(tabId, el, catKey){
+  if(!tabId) return;
+  const tabEl = document.getElementById(tabId);
+  if(!tabEl) return;
+  const card = tabEl.closest('.card');
+  card.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  card.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+  tabEl.classList.add('active');
+  loadNutriTab(tabId, nutriFilters[tabId]);
+}
+
+// Normaliza texto para comparación: minúsculas + sin tildes
+function normStr(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
+
+// Definición client-side de qué productos van en cada pestaña nutricional
+const NUTRI_TAB_DEFS = {
+  'nt-cocidos':   { cats: ['jamon cocido','cocidos','paleta cocida'], kws: ['jamon extra','jamon cocido','paleta cocida','lacón','lacon','jamon asado','fiambre de jamon','jamon moldeado','jamon reserva'] },
+  'nt-curados':   { cats: ['jamon y lomo curado','jamon y lomo','curados','ibéricos','ibericos'], kws: ['jamon serrano','lomo curado','lomo embuchado','paleta curada','jamon estirpe','jamon iberico','bellota','cebo de campo','serrano','curado'] },
+  'nt-embutidos': { cats: ['chorizo y salchichon','fuet y longaniza','mortadela y chopped','salchichas','embutido'], kws: ['chorizo','salchichon','fuet','longaniza','espetec','chistorra','frankfurt','salchicha','mortadela','chopped'] },
+  'nt-ave':       { cats: ['pavo y pollo'], kws: ['pechuga de pavo','pechuga de pollo','fiambre de pavo','fiambre de pollo','jamon de pavo','pechuguita','pollo asado','canal de pavo','canal de pollo'] },
+  'nt-platos':    { cats: ['platos preparados','asados'], kws: ['tortilla','ensalada','gazpacho','paella','macarrones','lasana','arroz','croquetas','nuggets','cocido','puchero','fabada','plato'] },
+  'nt-iberico':   { cats: ['ibéricos','ibericos'], kws: ['iberico','iberica','cebo de campo','bellota','dehesa','50% raza'] },
+};
+
+async function loadNutriTab(tabId, _orFilter){
+  const el = document.getElementById(tabId);
+  if(!el) return;
+  el.innerHTML = '<div class="loading"><div class="spin"></div>Cargando…</div>';
+  try {
+    // Carga todos los productos y filtra client-side por categoría + nombre
+    // Esto es más robusto que filtrar server-side, porque las categorías varían por marca
+    if(!allProductos.length){
+      const { data, error } = await sb.from('productos_competencia').select('*').eq('activo',true).order('competidor');
+      if(error) throw error;
+      if(data) allProductos = data;
+    }
+    const def = NUTRI_TAB_DEFS[tabId];
+    let filtered = allProductos;
+    if(def){
+      filtered = allProductos.filter(p => {
+        const cat = normStr(p.categoria);
+        const nom = normStr(p.nombre_producto);
+        if(def.cats.some(c => cat.includes(normStr(c)))) return true;
+        return def.kws.some(kw => nom.includes(normStr(kw)));
+      });
+    }
+    // Filtrar marca si hay filtro activo
+    const marcaFilt = document.getElementById('nutri-marca-filter')?.value || '';
+    if(marcaFilt) filtered = filtered.filter(p=>(p.competidor||'').toLowerCase().includes(marcaFilt));
+
+    if(!filtered.length){ el.innerHTML='<div class="empty-state"><div class="big">📊</div>Sin productos en esta categoría</div>'; return; }
+    filtered.sort((a,b)=>(a.competidor||'').localeCompare(b.competidor||''));
+    el.innerHTML = `<table><thead><tr><th>Marca</th><th>Producto</th><th>Kcal</th><th>Proteínas</th><th>G.Totales</th><th>G.Saturadas</th><th>Carboh.</th><th>Azúcares</th><th>Sal</th><th>% Carne</th></tr></thead><tbody>`+
+      filtered.map(p=>{
+        const bc = brandCls(p.competidor||'');
+        const bl = brands[Object.keys(brands).find(k=>brandCls(k)===bc)||'']?.label || p.competidor || '—';
+        const url = (p.url_producto||'').replace(/'/g,"&#39;");
+        return `<tr onclick="openDetail('${url}')" style="cursor:pointer"><td><span class="bp ${bc}">${bl}</span></td><td>${p.nombre_producto||'—'}</td><td class="mono">${p.kcal!=null?p.kcal:'—'}</td><td class="mono">${p.proteinas_g!=null?p.proteinas_g+'g':'—'}</td><td class="mono">${p.grasas_g!=null?p.grasas_g+'g':'—'}</td><td class="mono">${p.grasas_saturadas_g!=null?p.grasas_saturadas_g+'g':'—'}</td><td class="mono">${p.carbohidratos_g!=null?p.carbohidratos_g+'g':'—'}</td><td class="mono">${p.azucares_g!=null?p.azucares_g+'g':'—'}</td><td class="mono">${p.sal_g!=null?p.sal_g+'g':'—'}</td><td class="mono">${p.porcentaje_carne!=null?p.porcentaje_carne+'%':'—'}</td></tr>`;
+      }).join('')+`</tbody></table>`;
+  } catch(e){
+    console.warn('Nutri tab error:', e);
+    el.innerHTML = '<div class="empty-state"><div class="big">⚠</div>Error al cargar datos</div>';
+  }
+}
+
+// ── CHIPS ──
+function filterChip(el){
+  el.closest('div').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── ALERTAS CHIP FILTER ──
+function filterAlertas(tipo, el){
+  document.getElementById('alertas-tipo-chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  let data = allAlertas;
+  if(tipo==='critica') data = allAlertas.filter(r=>r.severidad==='critico'||r.severidad==='crítico');
+  else if(tipo==='alta') data = allAlertas.filter(r=>r.severidad==='alto'||r.severidad==='alta');
+  else if(tipo==='nueva') data = allAlertas.filter(r=>r.tipo_cambio==='nuevo_producto');
+  else if(tipo==='baja') data = allAlertas.filter(r=>r.severidad==='bajo'||r.severidad==='baja');
+  renderAlertasList(data);
+}
+
+function renderAlertasList(data){
+  const el = document.getElementById('alertas-list');
+  if(!data||!data.length){ el.innerHTML='<div class="empty-state"><div class="big">✓</div>Sin alertas en este período</div>'; return; }
+  el.innerHTML = data.map(r=>alertHtml(r, true)).join('');
+}
+
+// ── COMPARATIVA DYNAMIC ──
+// Mapa de valor de select → keywords para filtrado client-side
+const COMP_CAT_MAP = {
+  'jamon_cocido': { cats:['jamon cocido','cocidos'], kws:['jamon extra','jamon cocido','paleta cocida','lacón','lacon','jamon asado','jamon moldeado','jamon reserva','fiambre de jamon'] },
+  'pavo_pollo':   { cats:['pavo y pollo'], kws:['pechuga de pavo','pechuga de pollo','fiambre de pavo','jamon de pavo','pechuguita','pollo asado','canal de pavo','canal de pollo'] },
+  'jamon_curado': { cats:['jamon y lomo curado','curados'], kws:['jamon serrano','lomo curado','lomo embuchado','paleta curada','jamon estirpe'] },
+  'iberico':      { cats:['ibéricos','ibericos'], kws:['iberico','iberica','cebo de campo','bellota','dehesa','50% raza'] },
+  'chorizo':      { cats:['chorizo y salchichon'], kws:['chorizo','salchichon','salchichón'] },
+  'fuet':         { cats:['fuet y longaniza'], kws:['fuet','longaniza','espetec','chistorra'] },
+  'mortadela':    { cats:['mortadela y chopped'], kws:['mortadela','chopped'] },
+  'salchichas':   { cats:['salchichas'], kws:['frankfurt','salchicha','hot dog','bratwurst','bockwurst','viena','king upp'] },
+  'cocidos':      { cats:['cocidos'], kws:['bacon','panceta','fiambre','codillo','burger','hamburguesa','albondigas'] },
+  'pates':        { cats:['patés','pates'], kws:['pate','paté','sobrasada'] },
+  'snacks':       { cats:['snacks'], kws:['snack','bocadito','tapas fuet','tapas chorizo','mini fuet','mini chorizo'] },
+  'platos':       { cats:['platos preparados','asados'], kws:['tortilla','ensalada','gazpacho','paella','macarrones','lasana','arroz','croquetas','nuggets','cocido','plato preparado'] },
+};
+
+async function loadComparativa(){
+  const cat   = document.getElementById('comp-select')?.value || '';
+  const marca = document.getElementById('comp-marca-select')?.value || '';
+  const tbody = document.getElementById('comp-tbody');
+  const countEl = document.getElementById('comp-count');
+  if(!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="9"><div class="loading"><div class="spin"></div>Cargando…</div></td></tr>';
+  try {
+    // Cargar todos los productos si no están en caché
+    if(!allProductos.length){
+      const { data, error } = await sb.from('productos_competencia').select('*').eq('activo',true);
+      if(error) throw error;
+      if(data) allProductos = data;
+    }
+    // Filtrar client-side
+    let data = allProductos;
+    if(cat && COMP_CAT_MAP[cat]){
+      const def = COMP_CAT_MAP[cat];
+      data = data.filter(p=>{
+        const c = normStr(p.categoria); const n = normStr(p.nombre_producto);
+        if(def.cats.some(x=>c.includes(normStr(x)))) return true;
+        return def.kws.some(x=>n.includes(normStr(x)));
+      });
+    }
+    if(marca) data = data.filter(p=>(p.competidor||'').toLowerCase().includes(marca));
+    // Ordenar: primero los que tienen % carne, luego por % desc
+    data.sort((a,b)=>((b.porcentaje_carne!=null?1:0)-(a.porcentaje_carne!=null?1:0))||((b.porcentaje_carne||0)-(a.porcentaje_carne||0)));
+    if(!data.length){
+      tbody.innerHTML='<tr><td colspan="9" style="color:var(--g400);padding:20px;text-align:center">Sin productos para estos filtros</td></tr>';
+      if(countEl) countEl.textContent = '0 productos';
+      return;
+    }
+    if(countEl) countEl.textContent = data.length+' productos · por 100g';
+    tbody.innerHTML = data.map(p=>{
+      const bc = brandCls(p.competidor||'');
+      const bl = brands[Object.keys(brands).find(k=>brandCls(k)===bc)||'']?.label || p.competidor || '—';
+      const url = (p.url_producto||'').replace(/'/g,"&#39;");
+      const pct = p.porcentaje_carne!=null ? p.porcentaje_carne : null;
+      const color = brands[Object.keys(brands).find(k=>brandCls(k)===bc)||'']?.color || 'var(--g300)';
+      return `<tr onclick="openDetail('${url}')" style="cursor:pointer">
+        <td><span class="bp ${bc}">${bl}</span></td>
+        <td>${p.nombre_producto||'—'}</td>
+        <td>${pct!=null?`<div class="bw"><div class="bg" style="width:70px"><div class="bf" style="width:${Math.min(pct,100)}%;background:${color}"></div></div><span class="mono" style="font-size:11px">${pct}%</span></div>`:'<span style="color:var(--g300)">—</span>'}</td>
+        <td class="mono">${p.kcal!=null?p.kcal:'—'}</td>
+        <td class="mono">${p.proteinas_g!=null?p.proteinas_g+'g':'—'}</td>
+        <td class="mono">${p.grasas_g!=null?p.grasas_g+'g':'—'}</td>
+        <td class="mono">${p.grasas_saturadas_g!=null?p.grasas_saturadas_g+'g':'—'}</td>
+        <td class="mono">${p.carbohidratos_g!=null?p.carbohidratos_g+'g':'—'}</td>
+        <td class="mono">${p.sal_g!=null?p.sal_g+'g':'—'}</td>
+      </tr>`;
+    }).join('');
+  } catch(e){
+    console.warn('Comparativa error:', e);
+    tbody.innerHTML='<tr><td colspan="9" style="color:var(--g400);padding:20px;text-align:center">Error al cargar datos</td></tr>';
+  }
+}
+
+// ── CLAIMS MAP DYNAMIC ──
+async function loadClaimsMap(cat){
+  const grid = document.getElementById('claims-grid');
+  const cs = document.getElementById('claims-cs');
+  if(!grid) return;
+  grid.innerHTML = '<div class="loading"><div class="spin"></div>Cargando mapa de claims…</div>';
+  try {
+    const { data, error } = await sb.from('productos_competencia')
+      .select('competidor,sin_gluten,sin_lactosa,sin_colorantes,sin_conservantes,claims,claim_nutricional,claim_sellos,claim_proteinas')
+      .ilike('categoria','%'+cat+'%');
+    if(error) throw error;
+    if(!data||!data.length){
+      grid.innerHTML='<div class="empty-state">Sin datos para esta categoría</div>';
+      return;
+    }
+    if(cs) cs.textContent = cat+' · comparativa completa';
+
+    // Group by brand
+    const brandKeys = ['campofrio','elpozo','noel','argal'];
+    const byBrand = {};
+    brandKeys.forEach(k=>{ byBrand[k]=[]; });
+    data.forEach(r=>{
+      const bc = brandCls(r.competidor||'');
+      const key = Object.keys(brands).find(k=>brandCls(k)===bc);
+      if(key) byBrand[key].push(r);
+    });
+
+    const hasClaim = (rows, fn) => rows.some(fn) ? '✅' : '❌';
+
+    const claimRows = [
+      { label:'Sin Gluten',      fn: r => r.sin_gluten===true },
+      { label:'Sin Lactosa',     fn: r => r.sin_lactosa===true },
+      { label:'Sin Colorantes',  fn: r => r.sin_colorantes===true },
+      { label:'Sin Conservantes',fn: r => r.sin_conservantes===true },
+      { label:'Sin Nitritos',    fn: r => Array.isArray(r.claims) && r.claims.some(c=>(c||'').toLowerCase().includes('nitrito')) },
+      { label:'Alto en Proteínas', fn: r => r.claim_proteinas!=null && r.claim_proteinas!=='' },
+      { label:'Reducido en Sal', fn: r => (r.claim_nutricional||'').toLowerCase().includes('sal') },
+      { label:'Bienestar Animal', fn: r => (r.claim_sellos||'').toLowerCase().includes('bienestar') },
+    ];
+
+    const brandColors = {campofrio:'#991B1B',elpozo:'#0369A1',noel:'#9333EA',argal:'#047857'};
+    const brandLabels = {campofrio:'Campofrío',elpozo:'El Pozo',noel:'Noel',argal:'Argal'};
+
+    let html = '<div class="cgrid">';
+    html += '<div class="ch2">Claim</div>';
+    brandKeys.forEach(k=>{ html += `<div class="ch2" style="color:${brandColors[k]}">${brandLabels[k]}</div>`; });
+    claimRows.forEach(cr=>{
+      html += `<div class="cl2">${cr.label}</div>`;
+      brandKeys.forEach(k=>{ html += `<div class="cc2">${hasClaim(byBrand[k],cr.fn)}</div>`; });
+    });
+    html += '</div>';
+    grid.innerHTML = html;
+  } catch(e){
+    console.warn('Claims map error:', e);
+    grid.innerHTML='<div class="empty-state">Error al cargar datos</div>';
+  }
+}
+
+// ── DETAIL PANEL ──
+async function openDetail(url){
+  if(!url) return;
+  document.getElementById('dpBody').innerHTML='<div class="loading"><div class="spin"></div>Cargando ficha…</div>';
+  document.getElementById('dp').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+
+  const [rProd, rHist] = await Promise.all([
+    sb.from('productos_competencia').select('*').eq('url_producto',url).single(),
+    sb.from('historial_cambios').select('*').eq('url_producto',url).order('fecha_cambio',{ascending:false}).limit(5)
+  ]);
+
+  const p = rProd.data;
+  if(!p){ document.getElementById('dpBody').innerHTML='<div class="empty-state">No se encontró el producto</div>'; return; }
+
+  const bc = brandCls(p.competidor||'');
+  const bl = brands[Object.keys(brands).find(k=>brandCls(k)===bc)||'']?.label || p.competidor || '—';
+
+  document.getElementById('dpBrand').className='ab '+bc;
+  document.getElementById('dpBrand').textContent=bl;
+  document.getElementById('dpName').textContent=p.nombre_producto||'—';
+  document.getElementById('dpCat').textContent=(p.categoria||'')+(p.gramaje_g?' · '+p.gramaje_g+'g':'');
+
+  const hist = rHist.data || [];
+  const histHtml = hist.length ? hist.map(r=>{
+    return `<div style="padding:8px 0;border-bottom:1px solid var(--g100)"><div style="font-size:11px;color:var(--g400)">${fmtDate(r.fecha_cambio)} · ${r.campo_modificado||''}</div><div style="font-size:12px;margin-top:2px"><span style="color:var(--red);text-decoration:line-through">${r.valor_anterior||'—'}</span> → <span style="color:var(--green);font-weight:600">${r.valor_nuevo||'—'}</span></div>${r.motivo_calidad?`<div style="font-size:11px;color:var(--g600);margin-top:2px">${r.motivo_calidad}</div>`:''}</div>`;
+  }).join('') : '<div style="color:var(--g400);font-size:12px">Sin cambios registrados</div>';
+
+  const nutriItems = [
+    {v:p.kcal,u:'kcal',l:'Energía'},{v:p.proteinas_g,u:'g',l:'Proteínas'},{v:p.grasas_g,u:'g',l:'Grasas'},
+    {v:p.grasas_saturadas_g,u:'g',l:'G.Saturadas'},{v:p.carbohidratos_g,u:'g',l:'Carbohidratos'},{v:p.sal_g,u:'g',l:'Sal'},
+  ];
+
+  const claimsArr = Array.isArray(p.claims) ? p.claims : [];
+  // Combinar todos los claims y deduplicar (case-insensitive)
+  const rawClaims = [
+    p.sin_gluten?'Sin Gluten':null, p.sin_lactosa?'Sin Lactosa':null,
+    p.sin_colorantes?'Sin Colorantes':null, p.sin_conservantes?'Sin Conservantes':null,
+    p.claim_nutricional, p.claim_proteinas, p.claim_grasa, p.claim_sellos,
+    ...claimsArr
+  ].filter(Boolean);
+  const seenClaims = new Set();
+  const dedupedClaims = rawClaims.filter(c=>{ const k=(c||'').toLowerCase().trim(); if(seenClaims.has(k))return false; seenClaims.add(k); return true; });
+  const claimsHtml = dedupedClaims.map(c=>`<span class="ctag">${c}</span>`).join('') || '<span style="color:var(--g400);font-size:12px">—</span>';
+
+  const safeUrl = (p.url_producto||'').replace(/'/g,"&#39;");
+  const pJson = JSON.stringify(p).replace(/'/g,'&#39;');
+
+  document.getElementById('dpBody').innerHTML = `
+    <div>
+      <div class="dst">Valores nutricionales por 100g</div>
+      <div class="ng">
+        ${nutriItems.map(n=>`<div class="nb"><div class="nv">${n.v!=null?n.v:'—'}</div><div class="nu">${n.u}</div><div class="nl">${n.l}</div></div>`).join('')}
+        <div class="nb" style="background:var(--ice2)"><div class="nv" style="color:var(--tello)">${p.porcentaje_carne!=null?p.porcentaje_carne+'%':'—'}</div><div class="nu" style="color:var(--tello)">carne</div><div class="nl">% Cárnico</div></div>
+      </div>
+    </div>
+    ${p.ingredientes?`<div><div class="dst">Ingredientes</div><div class="ingr">${p.ingredientes}</div></div>`:''}
+    <div><div class="dst">Claims del packaging</div><div class="ctags">${claimsHtml}</div></div>
+    ${hist.length?`<div><div class="dst">Últimos cambios</div>${histHtml}</div>`:''}
+    <div><div class="dst">Acciones</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-pri" onclick="verHistorialProducto('${safeUrl}')">Ver historial</button>
+        <button class="btn btn-sec" onclick='exportarFicha(${pJson})'>Exportar ficha</button>
+        ${p.url_producto?`<button class="btn btn-ghost" onclick="window.open('${safeUrl}','_blank')">Abrir web →</button>`:''}
+      </div>
+    </div>`;
+}
+
+function verHistorialProducto(url){
+  closeDetail();
+  const histNav = document.querySelector('.ni[onclick*="historial"]');
+  nav('historial', histNav);
+  setTimeout(()=>{
+    const filtered = allHistorial.filter(r=>r.url_producto===url);
+    if(filtered.length) renderHistorialData(filtered);
+  }, 200);
+}
+
+function exportarFicha(p){
+  const rows = Object.entries(p).map(([k,v])=>`${k};${JSON.stringify(v||'')}`);
+  const blob = new Blob(['﻿'+rows.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=(p.nombre_producto||'producto').replace(/\s/g,'_')+'.csv'; a.click();
+}
+
+function closeDetail(){
+  document.getElementById('dp').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ── EXPORT FUNCTIONS ──
+function exportarExcel(){
+  if(!allHistorial.length){ alert('Sin datos para exportar'); return; }
+  const data = allHistorial.map(r=>({
+    Fecha: r.fecha_cambio, Competidor: r.competidor, Producto: r.nombre_producto,
+    Campo: r.campo_modificado, Antes: r.valor_anterior, Ahora: r.valor_nuevo,
+    Severidad: r.severidad, Dirección: r.direccion_calidad
+  }));
+  const csvRows = [Object.keys(data[0]).join(';'), ...data.map(r=>Object.values(r).map(v=>`"${v||''}"`).join(';'))];
+  const blob = new Blob(['﻿'+csvRows.join('\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='historial_cambios_tello.csv'; a.click();
+}
+
+function exportarPDF(){ window.print(); }
+
+function enviarEmail(){
+  const resumen = allHistorial.slice(0,10).map(r=>`- ${r.competidor}: ${r.nombre_producto} (${r.campo_modificado})`).join('%0A');
+  window.location.href = `mailto:marketing1@tello.es?subject=Historial%20Cambios%20Competencia&body=${resumen}`;
+}
+
+function showAddCompetidor(){
+  document.getElementById('modal-competidor').style.display = 'flex';
+}
+
+// ── RENDER ALERT ITEM ──
+function alertHtml(row, showFull){
+  const cls = severidadCls(row.severidad);
+  const bc = brandCls(row.competidor);
+  const bl = brands[Object.keys(brands).find(k=>brandCls(k)===bc)||'']?.label || row.competidor || '—';
+  const desc = row.resumen || row.descripcion || (row.campo_modificado ? `Campo: ${row.campo_modificado}` : 'Sin descripción');
+  const timeStr = showFull ? fmtDate(row.fecha_cambio) : timeAgo(row.fecha_cambio);
+  const campo = row.campo_modificado || row.tipo_cambio || '';
+  const url = (row.url_producto||'').replace(/'/g,"&#39;");
+  return `<div class="ali" onclick="openDetail('${url}')"><div class="ad ${cls}"></div><div style="flex:1"><div class="ab ${bc}">${bl}</div><div class="adesc">${desc}</div><div class="atime">${timeStr}${campo?' · '+campo:''}</div></div><div class="atag ${cls}">${severidadLabel(row.severidad)}</div></div>`;
+}
+
+// ── TOGGLE HIST ITEM ──
+function toggleHistItem(id){
+  const el = document.getElementById('hi-'+id);
+  if(el) el.style.display = el.style.display==='none'?'block':'none';
+}
+
+// ── LOAD DASHBOARD KPIs ──
+async function loadDashboardKpis(){
+  try {
+    const now = new Date();
+    const h12 = new Date(now - 12*3600*1000).toISOString();
+    const w7  = new Date(now - 7*24*3600*1000).toISOString();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+    // r3 y r4 filtran por BASELINE_DATE para excluir registros de setup/calibración
+    const baselineEfectivo = BASELINE_DATE > w7 ? BASELINE_DATE : w7;
+    const baselineClaimsEfectivo = BASELINE_DATE > firstDay ? BASELINE_DATE : firstDay;
+    const [r1, r2, r3, r4] = await Promise.all([
+      sb.from('productos_competencia').select('id', {count:'exact',head:true}).eq('activo', true),
+      sb.from('historial_cambios').select('id', {count:'exact',head:true}).eq('severidad','critico').gte('fecha_cambio', h12),
+      sb.from('historial_cambios').select('id', {count:'exact',head:true}).eq('tipo_cambio','nuevo_producto').gte('fecha_cambio', baselineEfectivo),
+      sb.from('historial_cambios').select('id', {count:'exact',head:true}).ilike('campo_modificado','%claim%').gte('fecha_cambio', baselineClaimsEfectivo),
+    ]);
+
+    const total = r1.count ?? '—';
+    const criticos = r2.count ?? '—';
+    const nuevos = r3.count ?? '—';
+    const claims = r4.count ?? '—';
+
+    document.getElementById('kpi-productos').textContent = total;
+    document.getElementById('kpi-criticos').textContent = criticos;
+    document.getElementById('kpi-nuevos').textContent = nuevos;
+    document.getElementById('kpi-claims').textContent = claims;
+    document.getElementById('kpi-nuevos-badge').textContent = `+${nuevos} esta semana`;
+    document.getElementById('kpi-nuevos-sub').textContent = `+${nuevos}`;
+
+    const badge = document.getElementById('badgeAlertas');
+    if(badge) badge.textContent = criticos;
+    const badgeNuevos = document.getElementById('badgeNuevos');
+    if(badgeNuevos && nuevos !== '—') badgeNuevos.textContent = nuevos;
+
+    document.getElementById('updTime').textContent = 'Actualizado: ' + fmtDate(new Date().toISOString());
+  } catch(e){
+    console.warn('KPIs error:', e);
+  }
+}
+
+// ── LOAD DASHBOARD ALERTAS ──
+async function loadDashboardAlertas(){
+  const el = document.getElementById('dash-alertas');
+  try {
+    const { data, error } = await sb.from('historial_cambios')
+      .select('*').order('fecha_cambio', {ascending:false}).limit(5);
+    if(error) throw error;
+    if(!data||!data.length){ el.innerHTML='<div class="empty-state"><div class="big">✓</div>Sin cambios recientes</div>'; return; }
+    el.innerHTML = data.map(r=>alertHtml(r, false)).join('');
+  } catch(e){
+    console.warn('Dash alertas error:', e);
+    el.innerHTML = '<div class="empty-state"><div class="big">⚠</div>No se pudo conectar con Supabase</div>';
+  }
+}
+
+// ── LOAD ALERTAS SCREEN ──
+async function loadAlertasScreen(){
+  try {
+    const now = new Date();
+    const w7 = new Date(now - 7*24*3600*1000).toISOString();
+    const isoDate = periodIsoDate(currentPeriodDays);
+
+    let qC = sb.from('historial_cambios').select('id',{count:'exact',head:true}).eq('severidad','critico');
+    let qA = sb.from('historial_cambios').select('id',{count:'exact',head:true}).eq('severidad','alto');
+    let qN = sb.from('historial_cambios').select('id',{count:'exact',head:true}).eq('tipo_cambio','nuevo_producto').gte('fecha_cambio',w7);
+    let qB = sb.from('historial_cambios').select('id',{count:'exact',head:true}).eq('severidad','bajo');
+    let qList = sb.from('historial_cambios').select('*').order('fecha_cambio',{ascending:false}).limit(100);
+
+    if(isoDate) {
+      qC = qC.gte('fecha_cambio', isoDate);
+      qA = qA.gte('fecha_cambio', isoDate);
+      qB = qB.gte('fecha_cambio', isoDate);
+      qList = qList.gte('fecha_cambio', isoDate);
+    }
+
+    const [rC, rA, rN, rB, rList] = await Promise.all([qC, qA, qN, qB, qList]);
+
+    document.getElementById('al-criticos').textContent = rC.count ?? '—';
+    document.getElementById('al-altas').textContent = rA.count ?? '—';
+    document.getElementById('al-nuevos').textContent = rN.count ?? '—';
+    document.getElementById('al-bajas').textContent = rB.count ?? '—';
+
+    allAlertas = rList.data || [];
+    renderAlertasList(allAlertas);
+  } catch(e){
+    console.warn('Alertas screen error:', e);
+  }
+}
+
+// ── LOAD PRODUCTOS ──
+async function loadProductos(){
+  try {
+    const { data, error } = await sb.from('productos_competencia').select('*').eq('activo',true);
+    if(error) throw error;
+    allProductos = data || [];
+    // Mark changed products (last 7 days)
+    const w7 = new Date(Date.now()-7*24*3600*1000).toISOString();
+    const { data: rc } = await sb.from('historial_cambios').select('url_producto').gte('fecha_cambio',w7);
+    const changedUrls = new Set((rc||[]).map(r=>r.url_producto));
+    allProductos.forEach(p=>{ p._hasChange = changedUrls.has(p.url_producto); });
+    // Default sort: changed first, then by % carne desc
+    allProductos.sort((a,b)=>((b._hasChange?1:0)-(a._hasChange?1:0))||(b.porcentaje_carne||0)-(a.porcentaje_carne||0));
+    // Build sidebar filters
+    buildFilterCheckboxes();
+    renderProductos(allProductos);
+    renderActiveChips();
+  } catch(e){
+    console.warn('Productos error:', e);
+    const el = document.getElementById('prod-tbody');
+    if(el) el.innerHTML = '<tr><td colspan="9" style="color:var(--g400);padding:20px;text-align:center">No se pudo cargar desde Supabase</td></tr>';
+  }
+}
+
+function renderProductos(data){
+  const tbody = document.getElementById('prod-tbody');
+  const countEl = document.getElementById('prod-count');
+  if(countEl) countEl.textContent = `${data.length} productos`;
+  if(!data.length){ tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="big">🔍</div>Sin resultados para los filtros seleccionados</div></td></tr>'; return; }
+  tbody.innerHTML = data.map(p=>{
+    const bc = brandCls(p.competidor||'');
+    const bl = brands[Object.keys(brands).find(k=>brandCls(k)===bc)||'']?.label || p.competidor || '—';
+    const stateCls = p._hasChange ? 'chg' : 'ok';
+    const stateLabel = p._hasChange ? '⚠ Cambio' : '✓ Sin cambios';
+    const carne = p.porcentaje_carne!=null ? p.porcentaje_carne+'%' : '—';
+    const kcal = p.kcal!=null ? p.kcal : '—';
+    const sal = p.sal_g!=null ? p.sal_g+'g' : '—';
+    const fecha = fmtDate(p.fecha_ultima_actualizacion);
+    const url = (p.url_producto||'').replace(/'/g,"\\'");
+    return `<tr style="cursor:pointer" onclick="openDetail('${url}')">
+      <td><span class="bp ${bc}">${bl}</span></td>
+      <td>${p.nombre_producto||'—'}</td>
+      <td>${p.categoria||'—'}</td>
+      <td class="mono">${carne}</td>
+      <td class="mono">${kcal}</td>
+      <td class="mono">${sal}</td>
+      <td class="mono" style="font-size:11px">${fecha}</td>
+      <td><span class="cc ${stateCls}">${stateLabel}</span></td>
+      <td><span style="color:var(--tello);cursor:pointer;font-size:12px;font-weight:600" onclick="event.stopPropagation();openDetail('${url}')">Ver →</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── LOAD HISTORIAL ──
+async function loadHistorial(){
+  try {
+    const isoDate = periodIsoDate(currentPeriodDays);
+    let q = sb.from('historial_cambios').select('*').order('fecha_cambio',{ascending:false}).limit(100);
+    if(isoDate) q = q.gte('fecha_cambio', isoDate);
+    const { data, error } = await q;
+    if(error) throw error;
+    allHistorial = data || [];
+    renderHistorialData(allHistorial);
+    loadHistorialResumen();
+  } catch(e){
+    console.warn('Historial error:', e);
+    document.getElementById('hist-list').innerHTML = '<div class="empty-state"><div class="big">⚠</div>No se pudo cargar el historial</div>';
+  }
+}
+
+const SEVER_ORDER = {'critico':0,'crítico':0,'alto':1,'alta':1,'nuevo_producto':2,'medio':3,'media':3,'bajo':4,'baja':4};
+function renderHistorialData(inputData){
+  const marcaFilter = (document.getElementById('hist-marca-filter')?.value||'').toLowerCase();
+  const tipoFilter  = (document.getElementById('hist-tipo-filter')?.value||'').toLowerCase();
+  const prodSearch  = (document.getElementById('hist-prod-search')?.value||'').toLowerCase();
+  const sortMode    = document.getElementById('hist-sort')?.value || 'recientes';
+  let data = inputData;
+  if(marcaFilter) data = data.filter(r=>(r.competidor||'').toLowerCase().includes(marcaFilter));
+  if(tipoFilter){
+    data = data.filter(r=>{
+      const campo = (r.campo_modificado||'').toLowerCase();
+      const tipo  = (r.tipo_cambio||'').toLowerCase();
+      if(tipoFilter==='nuevo_producto') return tipo==='nuevo_producto';
+      return campo.includes(tipoFilter) || tipo.includes(tipoFilter);
+    });
+  }
+  if(prodSearch) data = data.filter(r=>(r.nombre_producto||'').toLowerCase().includes(prodSearch));
+  if(sortMode==='relevantes'){
+    data = [...data].sort((a,b)=>{
+      const sa = SEVER_ORDER[(a.severidad||'').toLowerCase()] ?? 5;
+      const sb2 = SEVER_ORDER[(b.severidad||'').toLowerCase()] ?? 5;
+      return sa - sb2 || new Date(b.fecha_cambio||0) - new Date(a.fecha_cambio||0);
+    });
+  }
+
+  const el = document.getElementById('hist-list');
+  if(!data.length){ el.innerHTML='<div class="empty-state"><div class="big">📋</div>Sin registros</div>'; return; }
+
+  const groups = {};
+  data.forEach(r=>{
+    const key = fmtDateGroup(r.fecha_cambio);
+    if(!groups[key]) groups[key]=[];
+    groups[key].push(r);
+  });
+
+  let html = '';
+  const groupKeys = Object.keys(groups);
+  groupKeys.forEach((dateLabel, gi)=>{
+    html += `<div style="padding:12px 18px 0"><div style="font-size:10.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.1em;padding-bottom:10px;border-bottom:1px solid var(--g100)">${dateLabel}</div></div>`;
+    const items = groups[dateLabel];
+    items.forEach((r, idx)=>{
+      const tag = histTagStyle(r.tipo_cambio||r.campo_modificado);
+      const dotColor = histDotColor(r.severidad);
+      const isLast = gi===groupKeys.length-1 && idx===items.length-1;
+      const desc = r.resumen || r.descripcion || (r.nombre_producto ? `<strong>${r.nombre_producto}</strong>` : 'Cambio detectado');
+      const timeStr = r.fecha_cambio ? new Date(r.fecha_cambio).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}) : '—';
+      const comp = r.competidor||'—';
+      const rid = r.id||idx;
+      html += `<div class="hist-item" onclick="toggleHistItem(${rid})" style="cursor:pointer;flex-direction:column">
+        <div style="display:flex;gap:14px;width:100%">
+          <div class="hist-line"><div class="hist-dot" style="background:${dotColor}"></div>${!isLast?'<div class="hist-v"></div>':''}</div>
+          <div class="hist-body"><div class="hist-date">${timeStr} · ${comp}</div><div class="hist-desc">${desc}</div><span class="hist-tag" style="background:${tag.bg};color:${tag.col}">${tag.label}</span></div>
+        </div>
+        <div id="hi-${rid}" style="display:none;margin-top:8px;padding:8px;background:var(--g50);border-radius:6px;font-size:12px;margin-left:24px">
+          <div><strong>Campo:</strong> ${r.campo_modificado||'—'}</div>
+          <div><strong>Antes:</strong> <span style="color:var(--red)">${r.valor_anterior||'—'}</span></div>
+          <div><strong>Ahora:</strong> <span style="color:var(--green)">${r.valor_nuevo||'—'}</span></div>
+          ${r.motivo_calidad?`<div style="margin-top:4px;color:var(--g600)">${r.motivo_calidad}</div>`:''}
+        </div>
+      </div>`;
+    });
+  });
+  el.innerHTML = html;
+}
+
+async function loadHistorialResumen(){
+  try {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const { data } = await sb.from('historial_cambios')
+      .select('competidor').gte('fecha_cambio', firstDay);
+    if(!data) return;
+    const counts = {};
+    data.forEach(r=>{ const c=r.competidor||'otros'; counts[c]=(counts[c]||0)+1; });
+    const max = Math.max(...Object.values(counts), 1);
+    const brandMap = {'campofrio':'Campofrío','elpozo':'El Pozo','noel':'Noel','argal':'Argal'};
+    const colorMap = {campofrio:'#991B1B',elpozo:'#0369A1',noel:'#9333EA',argal:'#047857'};
+    let html = '';
+    Object.entries(counts).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{
+      const label = brandMap[k]||k;
+      const color = colorMap[k]||'var(--g400)';
+      const pct = Math.round((v/max)*100);
+      html += `<div class="bw"><div style="font-size:12px;color:var(--g600);width:100px">${label}</div><div class="bg"><div class="bf" style="width:${pct}%;background:${color}"></div></div><span class="mono" style="font-size:11px;color:var(--g400)">${v}</span></div>`;
+    });
+    document.getElementById('hist-resumen').innerHTML = html || '<div style="color:var(--g400);font-size:12px">Sin datos este mes</div>';
+  } catch(e){ console.warn('Resumen error:', e); }
+}
+
+// ── NUTRICIONAL KPIs ──
+async function loadNutriKpis(){
+  try {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const { count: nutriCount } = await sb.from('historial_cambios')
+      .select('id',{count:'exact',head:true}).ilike('campo_modificado','%nutri%').gte('fecha_cambio', firstDay);
+    document.getElementById('nt-kpi1').textContent = nutriCount ?? '—';
+
+    const { data: cocidos } = await sb.from('productos_competencia')
+      .select('porcentaje_carne').or('categoria.ilike.%cocido%,categoria.ilike.%Cocidos%').not('porcentaje_carne','is',null);
+    if(cocidos && cocidos.length){
+      const avg = cocidos.reduce((s,r)=>s+(parseFloat(r.porcentaje_carne)||0),0) / cocidos.length;
+      document.getElementById('nt-kpi4').textContent = Math.round(avg)+'%';
+    }
+
+    const { data: nutriChanges } = await sb.from('historial_cambios')
+      .select('id',{count:'exact',head:true}).ilike('campo_modificado','%kcal%');
+    document.getElementById('nt-kpi2').textContent = nutriChanges?.length ? '+'+nutriChanges.length : '—';
+
+    const { data: salChanges } = await sb.from('historial_cambios')
+      .select('id',{count:'exact',head:true}).ilike('campo_modificado','%sal%');
+    document.getElementById('nt-kpi3').textContent = salChanges?.length ? '-'+salChanges.length : '—';
+
+    // Load initial cocidos tab
+    loadNutriTab('nt-cocidos', nutriFilters['nt-cocidos']);
+  } catch(e){ console.warn('Nutri KPIs error:', e); }
+}
+
+// ── RENDER MARCA ──
+async function renderMarca(brand){
+  const b = brands[brand];
+  if(!b) return;
+  document.getElementById('marcaTitle').textContent = 'Productos · ' + b.label;
+  document.getElementById('marcaSub').textContent = 'Cargando…';
+  document.getElementById('marcaKpis').innerHTML = `<div class="kpi b"><div class="kl">Productos</div><div class="kv" id="mk-prods">—</div><div class="ks">en catálogo</div></div><div class="kpi r"><div class="kl">Cambios este mes</div><div class="kv" id="mk-cambios">—</div><div class="ks">detectados</div></div><div class="kpi g"><div class="kl">Nuevos lanzamientos</div><div class="kv" id="mk-nuevos">—</div><div class="ks">esta semana</div></div><div class="kpi a"><div class="kl">Última revisión</div><div class="kv" id="mk-last">—</div><div class="ks">última actualización</div></div>`;
+
+  try {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const w7 = new Date(now - 7*24*3600*1000).toISOString();
+
+    const [rProds, rCambios, rNuevos, rHistory] = await Promise.all([
+      sb.from('productos_competencia').select('*').ilike('competidor','%'+brand+'%'),
+      sb.from('historial_cambios').select('id',{count:'exact',head:true}).ilike('competidor','%'+brand+'%').gte('fecha_cambio',firstDay),
+      sb.from('historial_cambios').select('id',{count:'exact',head:true}).ilike('competidor','%'+brand+'%').eq('tipo_cambio','nuevo_producto').gte('fecha_cambio',w7),
+      sb.from('historial_cambios').select('*').ilike('competidor','%'+brand+'%').order('fecha_cambio',{ascending:false}).limit(5),
+    ]);
+
+    const prodData = rProds.data || [];
+    document.getElementById('mk-prods').textContent = prodData.length;
+    document.getElementById('mk-cambios').textContent = rCambios.count ?? '—';
+    document.getElementById('mk-nuevos').textContent = rNuevos.count ?? '—';
+    document.getElementById('marcaSub').textContent = prodData.length + ' productos en catálogo';
+
+    const latest = prodData.sort((a,bb)=>new Date(bb.fecha_ultima_actualizacion||0)-new Date(a.fecha_ultima_actualizacion||0))[0];
+    if(latest?.fecha_ultima_actualizacion){
+      const d = new Date(latest.fecha_ultima_actualizacion);
+      document.getElementById('mk-last').textContent = d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+    }
+
+    const w7changes = await sb.from('historial_cambios').select('nombre_producto').ilike('competidor','%'+brand+'%').gte('fecha_cambio',w7);
+    const changedNames = new Set((w7changes.data||[]).map(r=>(r.nombre_producto||'').toLowerCase()));
+
+    document.getElementById('marcaProds').innerHTML = '<table><thead><tr><th>Producto</th><th>Categoría</th><th>Estado</th></tr></thead><tbody>'+
+      (prodData.length ? prodData.map(p=>{
+        const hasChange = changedNames.has((p.nombre_producto||'').toLowerCase());
+        const url = (p.url_producto||'').replace(/'/g,"&#39;");
+        return `<tr style="cursor:pointer" onclick="openDetail('${url}')"><td>${p.nombre_producto||'—'}</td><td><span style="font-size:12px;color:var(--g600)">${p.categoria||'—'}</span></td><td><span class="cc ${hasChange?'chg':'ok'}">${hasChange?'⚠ Cambio':'✓ Sin cambios'}</span></td></tr>`;
+      }).join('') : '<tr><td colspan="3" style="color:var(--g400);padding:20px;text-align:center">Sin productos</td></tr>')+
+      '</tbody></table>';
+
+    const hist = rHistory.data || [];
+    if(hist.length){
+      document.getElementById('marcaHistory').innerHTML = hist.map((r,idx)=>{
+        const tag = histTagStyle(r.tipo_cambio||r.campo_modificado);
+        const dotColor = histDotColor(r.severidad);
+        const isLast = idx===hist.length-1;
+        const desc = r.resumen || r.descripcion || (r.nombre_producto ? `<strong>${r.nombre_producto}</strong>` : 'Cambio detectado');
+        return `<div class="hist-item"><div class="hist-line"><div class="hist-dot" style="background:${dotColor}"></div>${!isLast?'<div class="hist-v"></div>':''}</div><div class="hist-body"><div class="hist-date">${fmtDate(r.fecha_cambio)}</div><div class="hist-desc">${desc}</div><span class="hist-tag" style="background:${tag.bg};color:${tag.col}">${tag.label}</span></div></div>`;
+      }).join('');
+    } else {
+      document.getElementById('marcaHistory').innerHTML = '<div class="empty-state"><div class="big">✓</div>Sin cambios recientes</div>';
+    }
+  } catch(e){
+    console.warn('Marca error:', e);
+    document.getElementById('marcaSub').textContent = 'Error de conexión';
+    document.getElementById('marcaProds').innerHTML = '<div class="empty-state"><div class="big">⚠</div>No se pudo cargar</div>';
+    document.getElementById('marcaHistory').innerHTML = '<div class="empty-state"><div class="big">⚠</div>No se pudo cargar</div>';
+  }
+}
+
+// ── LIVE INDICATOR ──
+async function loadLiveIndicator(){
+  try {
+    const { data } = await sb.from('log_ejecuciones').select('fin').order('fin',{ascending:false}).limit(1);
+    if(data && data[0]?.fin){
+      const d = new Date(data[0].fin);
+      const hh = String(d.getHours()).padStart(2,'0');
+      const mm = String(d.getMinutes()).padStart(2,'0');
+      document.getElementById('liveText').textContent = `Ciclo activo · ${hh}:${mm}`;
+    }
+  } catch(e){ /* silently ignore */ }
+}
+
+// ── CLAIMS FEED (DASHBOARD) ──
+function renderClaimsFeed(data) {
+  const el = document.getElementById('dash-claims-feed');
+  if (!el) return;
+  if (!data || !data.length) {
+    el.innerHTML = '<div class="empty-state"><div class="big">🏷</div>Sin cambios de claims recientes</div>';
+    return;
+  }
+  const CLAIM_CAT = {
+    nutricion: ['nutricion','kcal','proteinas','grasa','sal','fibra','azucar','calorias','colesterol'],
+    proceso:   ['nitrito','fosfato','conservante','colorante','aditivo','gluten','lactosa','ahumado','braseado','horneado','vapor','curac'],
+    cert:      ['duroc','iberico','bienestar','denominacion','ecologico','halal','organico','raza','certificac'],
+    gama:      ['bonnatur','oliving','premier','vegalia','cuida','artesano','seleccion','gourmet','premium','natural'],
+  };
+  function pillCat(s) {
+    const c = (s||'').toLowerCase();
+    for (const [cat, keys] of Object.entries(CLAIM_CAT)) {
+      if (keys.some(k => c.includes(k))) return cat;
+    }
+    return 'proceso';
+  }
+  function parseClaims(val) {
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    try { const p = JSON.parse(val); if (Array.isArray(p)) return p; } catch(e) {}
+    return String(val).split(',').map(s=>s.trim()).filter(Boolean);
+  }
+  el.innerHTML = data.map(r => {
+    const bc = brandCls(r.competidor||'');
+    const bl = brands[Object.keys(brands).find(k=>brandCls(k)===bc)||'']?.label || r.competidor || '—';
+    const url = (r.url_produto||r.url_producto||'').replace(/'/g,"&#39;");
+    const antes = parseClaims(r.valor_anterior);
+    const ahora = parseClaims(r.valor_nuevo);
+    const añadidos  = ahora.filter(c => !antes.includes(c));
+    const eliminados = antes.filter(c => !ahora.includes(c));
+    let pills = '';
+    if (añadidos.length || eliminados.length) {
+      añadidos.forEach(c  => { pills += `<span class="cpill add">+${c}</span>`; });
+      eliminados.forEach(c => { pills += `<span class="cpill del">−${c}</span>`; });
+    } else {
+      const campo = r.campo_modificado || '';
+      pills = `<span class="cpill ${pillCat(campo)}">${campo.replace(/_/g,' ')}</span>`;
+    }
+    return `<div class="claim-feed-item" onclick="openDetail('${url}')" style="cursor:pointer">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+          <span class="bp ${bc}" style="flex-shrink:0">${bl}</span>
+          <span style="font-size:12.5px;font-weight:600;color:var(--g900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.nombre_producto||'—'}</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap">${pills}</div>
+      </div>
+      <div style="font-size:11px;color:var(--g400);white-space:nowrap;flex-shrink:0;margin-left:12px">${timeAgo(r.fecha_cambio)}</div>
+    </div>`;
+  }).join('');
+
+  const banner = document.getElementById('dash-claims-banner');
+  if (banner && data.length > 0) {
+    const comps = [...new Set(data.map(r=>r.competidor).filter(Boolean))].map(c=>brands[c]?.label||c).join(', ');
+    const bannerTitle = document.getElementById('dash-banner-title');
+    const bannerSub   = document.getElementById('dash-banner-sub');
+    if(bannerTitle) bannerTitle.textContent = `${data.length} cambios en claims detectados`;
+    if(bannerSub)   bannerSub.textContent   = `Últimos 14 días · ${comps || '4 marcas'}`;
+    banner.style.display = 'flex';
+  }
+}
+
+// ── NUEVOS PRODUCT CARDS (DASHBOARD) ──
+function renderNuevosCards(data) {
+  const el = document.getElementById('dash-nuevos-cards');
+  if (!el) return;
+  if (!data || !data.length) {
+    el.innerHTML = '<div class="empty-state" style="padding:20px"><div class="big">✓</div>Sin productos nuevos esta semana</div>';
+    return;
+  }
+  el.innerHTML = data.map(r => {
+    const bc = brandCls(r.competidor||'');
+    const bl = brands[Object.keys(brands).find(k=>brandCls(k)===bc)||'']?.label || r.competidor || '—';
+    const url = (r.url_produto||r.url_producto||'').replace(/'/g,"&#39;");
+    const prod = r.nombre_producto || r.valor_nuevo || '—';
+    const cat  = r.resumen || r.descripcion || '';
+    return `<div class="new-prod-card" onclick="openDetail('${url}')" style="cursor:pointer">
+      <span class="bp ${bc}">${bl}</span>
+      <div style="font-size:12.5px;font-weight:700;color:var(--g900);margin:8px 0 4px;line-height:1.3">${prod}</div>
+      ${cat?`<div style="font-size:11px;color:var(--g500);margin-bottom:4px">${cat}</div>`:''}
+      <div style="font-size:10.5px;color:var(--g400);margin-top:auto">${timeAgo(r.fecha_cambio)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── LOAD DASHBOARD CLAIMS + NUEVOS ──
+async function loadDashboardClaimsAndNuevos() {
+  try {
+    // Usar la más restrictiva: ventana temporal O baseline, lo que sea más reciente
+    const w14raw = new Date(Date.now() - 14*24*3600*1000).toISOString();
+    const w7raw  = new Date(Date.now() -  7*24*3600*1000).toISOString();
+    const desdeClaims = BASELINE_DATE > w14raw ? BASELINE_DATE : w14raw;
+    const desdeNuevos = BASELINE_DATE > w7raw  ? BASELINE_DATE : w7raw;
+
+    const [rClaims, rNuevos] = await Promise.all([
+      sb.from('historial_cambios').select('*')
+        .or('campo_modificado.ilike.%claim%,tipo_cambio.eq.claims')
+        .gte('fecha_cambio', desdeClaims)
+        .order('fecha_cambio', {ascending:false})
+        .limit(8),
+      sb.from('historial_cambios').select('*')
+        .eq('tipo_cambio','nuevo_producto')
+        .gte('fecha_cambio', desdeNuevos)
+        .order('fecha_cambio', {ascending:false})
+        .limit(8),
+    ]);
+
+    renderClaimsFeed(rClaims.data || []);
+    renderNuevosCards(rNuevos.data || []);
+
+    const badgeClaims = document.getElementById('badgeClaims');
+    if (badgeClaims) badgeClaims.textContent = (rClaims.data||[]).length || '0';
+
+  } catch(e) {
+    console.warn('Claims+Nuevos error:', e);
+    const e1 = document.getElementById('dash-claims-feed');
+    const e2 = document.getElementById('dash-nuevos-cards');
+    if(e1) e1.innerHTML = '<div class="empty-state"><div class="big">⚠</div>No se pudo conectar</div>';
+    if(e2) e2.innerHTML = '<div class="empty-state"><div class="big">⚠</div>No se pudo conectar</div>';
+  }
+}
+
+// ── NUEVOS PRODUCTOS SCREEN ──
+let allNuevos = [];
+async function loadNuevosProductos() {
+  const grid = document.getElementById('np-grid');
+  if(grid) grid.innerHTML = '<div class="loading" style="grid-column:1/-1"><div class="spin"></div>Cargando nuevos productos…</div>';
+  try {
+    const d30raw = new Date(Date.now() - 30*24*3600*1000).toISOString();
+    const d7raw  = new Date(Date.now() -  7*24*3600*1000).toISOString();
+    // Aplicar baseline: ignorar datos de calibración/setup
+    const d30 = BASELINE_DATE > d30raw ? BASELINE_DATE : d30raw;
+    const d7  = BASELINE_DATE > d7raw  ? BASELINE_DATE : d7raw;
+
+    const [rAll, rSemana, rMes] = await Promise.all([
+      sb.from('historial_cambios').select('*').eq('tipo_cambio','nuevo_producto').gte('fecha_cambio',d30).order('fecha_cambio',{ascending:false}),
+      sb.from('historial_cambios').select('id',{count:'exact',head:true}).eq('tipo_cambio','nuevo_producto').gte('fecha_cambio',d7),
+      sb.from('historial_cambios').select('id',{count:'exact',head:true}).eq('tipo_cambio','nuevo_producto').gte('fecha_cambio',d30),
+    ]);
+
+    allNuevos = rAll.data || [];
+
+    const npTotal  = document.getElementById('np-total');
+    const npSemana = document.getElementById('np-semana');
+    const npMes    = document.getElementById('np-mes');
+    const npSub    = document.getElementById('np-sub');
+    if(npTotal)  npTotal.textContent  = allNuevos.length;
+    if(npSemana) npSemana.textContent = rSemana.count ?? '—';
+    if(npMes)    npMes.textContent    = rMes.count ?? '—';
+    if(npSub)    npSub.textContent    = `${allNuevos.length} lanzamientos detectados en los últimos 30 días`;
+
+    renderNuevosGrid(allNuevos);
+  } catch(e) {
+    console.warn('Nuevos productos error:', e);
+    if(grid) grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="big">⚠</div>Error al cargar</div>';
+  }
+}
+
+function renderNuevosGrid(data) {
+  const grid = document.getElementById('np-grid');
+  if(!grid) return;
+  if(!data || !data.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="big">✨</div>Sin nuevos productos en los últimos 30 días</div>';
+    return;
+  }
+  grid.innerHTML = data.map(r => {
+    const bc = brandCls(r.competidor||'');
+    const bl = brands[Object.keys(brands).find(k=>brandCls(k)===bc)||'']?.label || r.competidor || '—';
+    const url = (r.url_produto||r.url_producto||'').replace(/'/g,"&#39;");
+    const prod = r.nombre_producto || r.valor_nuevo || '—';
+    const cat  = r.resumen || r.descripcion || '';
+    const date = fmtDate(r.fecha_cambio);
+    return `<div class="new-prod-card" onclick="openDetail('${url}')" style="cursor:pointer">
+      <span class="bp ${bc}">${bl}</span>
+      <div style="font-size:13px;font-weight:700;color:var(--g900);margin:8px 0 4px;line-height:1.3">${prod}</div>
+      ${cat?`<div style="font-size:11px;color:var(--g500);margin-bottom:6px">${cat}</div>`:''}
+      <div style="font-size:10.5px;color:var(--g400);margin-top:auto;padding-top:8px;border-top:1px solid var(--g100)">${date}</div>
+    </div>`;
+  }).join('');
+}
+
+function filterNuevos(brand, el) {
+  el.closest('div').querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const filtered = brand==='all' ? allNuevos : allNuevos.filter(r=>(r.competidor||'').toLowerCase().includes(brand));
+  renderNuevosGrid(filtered);
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', async ()=>{
+  buildChart();
+  await Promise.all([
+    loadDashboardKpis(),
+    loadDashboardAlertas(),
+    loadDashboardClaimsAndNuevos(),
+    loadProductos(),
+    loadHistorial(),
+    loadLiveIndicator(),
+  ]);
+});
+</script>
+</body>
+</html>
